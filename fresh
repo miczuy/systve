@@ -1,0 +1,27 @@
+
+   INFO  Nothing to migrate.  
+
+   INFO  Seeding database.  
+
+
+   Illuminate\Database\UniqueConstraintViolationException 
+
+  SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'admin@admin.com' for key 'users_email_unique' (Connection: mysql, SQL: insert into `users` (`name`, `email`, `password`, `updated_at`, `created_at`) values (Administrador, admin@admin.com, $2y$10$Rtag3RLZAlA.cXnl7g3Hy.NPr3Wlh4IT4Qv1pUZupFZo/72D7qTkq, 2024-10-15 00:56:03, 2024-10-15 00:56:03))
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:824
+    820▕         // message to include the bindings with SQL, which will make this exception a
+    821▕         // lot more helpful to the developer instead of just the database's errors.
+    822▕         catch (Exception $e) {
+    823▕             if ($this->isUniqueConstraintError($e)) {
+  ➜ 824▕                 throw new UniqueConstraintViolationException(
+    825▕                     $this->getName(), $query, $this->prepareBindings($bindings), $e
+    826▕                 );
+    827▕             }
+    828▕
+
+  1   vendor\laravel\framework\src\Illuminate\Database\MySqlConnection.php:45
+      PDOException::("SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'admin@admin.com' for key 'users_email_unique'")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\MySqlConnection.php:45
+      PDOStatement::execute()
+

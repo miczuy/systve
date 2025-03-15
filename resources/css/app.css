@@ -1,0 +1,362 @@
+@tailwind base; /* Importa los estilos base de Tailwind CSS */
+@tailwind components; /* Importa los componentes de Tailwind CSS */
+@tailwind utilities; /* Importa las utilidades de Tailwind CSS */
+* {
+    font-family: 'Poppins', sans-serif; /* Establece la fuente Poppins para todos los elementos */
+    box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho y alto de los elementos */
+}
+
+:root {
+    /* Definición de variables CSS para colores y transiciones */
+    --body-color: #E4E9F7; /* Color de fondo del cuerpo */
+    --sidebar-color: #FFF; /* Color de fondo de la barra lateral */
+    --primary-color: #695CFE; /* Color primario */
+    --primary-color-light: #F6F5FF; /* Color primario claro */
+    --toggle-color: #DDD; /* Color del interruptor */
+    --text-color: #707070; /* Color del texto */
+
+    /* Definición de variables para transiciones */
+    --tran-02: all 0.2s ease; /* Transición de 0.2 segundos */
+    --tran-03: all 0.3s ease; /* Transición de 0.3 segundos */
+    --tran-04: all 0.4s ease; /* Transición de 0.4 segundos */
+    --tran-05: all 0.5s ease; /* Transición de 0.5 segundos */
+}
+
+body {
+    height: 100vh; /* Altura del cuerpo igual a la altura de la ventana */
+    background: var(--body-color); /* Establece el color de fondo del cuerpo usando la variable definida */
+    transition: var(--tran-05); /* Aplica la transición definida al cuerpo */
+}
+
+body.dark {
+    --body-color: #18191A;
+    --sidebar-color: #242526;
+    --primary-color: #3A3B3C;
+    --primary-color-light: #3A3B3C;
+    --toggle-color: #FFF;
+    --text-color: #CCC;
+    --shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* ==== Sidebar ==== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding: 10px 14px;
+    background: var(--sidebar-color);
+    box-shadow: var(--shadow);
+    transition: var(--tran-05);
+    z-index: 100;
+    border-radius: 0 20px 20px 0;
+}
+
+.sidebar.close {
+    width: 88px; /* Ancho de la barra lateral cuando está cerrada */
+}
+
+.sidebar .text {
+    font-size: 16px; /* Tamaño de fuente del texto en la barra lateral */
+    font-weight: 500; /* Peso de la fuente del texto */
+    color: var(--text-color); /* Color del texto usando la variable definida */
+    transition: var(--tran-03); /* Aplica la transición definida al texto */
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    opacity: 1; /* Opacidad del texto */
+}
+
+.sidebar.close .text {
+    opacity: 0; /* Hace que el texto sea invisible cuando la barra lateral está cerrada */
+}
+
+.sidebar .image {
+    margin-right: -30%;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: margin-right var(--tran-03); /* Transición para el margen derecho */
+}
+
+.sidebar .image:hover {
+    margin-right: 0;
+    transform: scale(1.1); /* Efecto de escala al pasar el mouse */
+}
+
+
+.sidebar.close .image {
+    margin-right: 0%; /* Cambia el margen derecho cuando la barra lateral está cerrada */
+}
+
+.sidebar li {
+    height: 50px;
+    margin-top: 10px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    transition: var(--tran-03);
+}
+
+.sidebar li:hover {
+    background: var(--primary-color-light);
+    box-shadow: var(--shadow);
+}
+
+.sidebar li .icon {
+    display: flex; /* Usa flexbox para alinear el ícono */
+    align-items: center; /* Centra verticalmente el contenido */
+    justify-content: center; /* Centra horizontalmente el contenido */
+    min-width: 60px; /* Ancho mínimo del ícono */
+    height: 60px; /* Asegura que el contenedor sea cuadrado */
+}
+
+.sidebar li .icon img {
+    width: 40px; /* Define un ancho estándar para las imágenes */
+    height: 40px; /* Define una altura estándar para las imágenes */
+    object-fit: cover; /* Asegura que la imagen se ajuste proporcionalmente */
+    display: block; /* Asegura que la imagen se comporte como bloque */
+}
+
+.sidebar li .text {
+    color: var(--text-color); /* Color del texto usando la variable definida */
+    transition: var(--tran-02); /* Aplica la transición definida al texto */
+}
+
+.sidebar header {
+    position: relative; /* Posiciona el encabezado de la barra lateral de forma relativa */
+    display: flex; /* Usa flexbox para alinear los elementos en el encabezado */
+    align-items: center; /* Centra verticalmente los elementos en el encabezado */
+}
+
+.sidebar .image-text img {
+    width: 40px; /* Ancho de la imagen en el encabezado */
+    border-radius: 6px; /* Bordes redondeados de la imagen */
+    min-width: 70px; /* Ancho mínimo del ícono */
+    margin-right: 70px;
+}
+
+.header-text {
+    display: flex; /* Usa flexbox para alinear los elementos en el texto del encabezado */
+    flex-direction: column; /* Coloca los elementos en columna */
+    margin-left: 10px; /* Margen izquierdo del texto del encabezado */
+}
+
+.header-text .name {
+    font-weight: 600; /* Peso de la fuente del nombre */
+}
+
+.header-text .professional {
+    margin-top: -2px; /* Margen superior negativo para ajustar la posición */
+    font-size: 14px; /* Tamaño de fuente del texto profesional */
+    color: var(--text-color); /* Color del texto profesional usando la variable definida */
+}
+
+.sidebar header .toggle {
+    position: absolute; /* Posiciona el botón de alternar de forma absoluta */
+    top: 90%; /* Posiciona el botón en el centro verticalmente */
+    right: -25px; /* Posiciona el botón a la derecha */
+    transform: translateY(-50%) rotate(180deg); /* Centra verticalmente y rota el botón */
+    height: 55px; /* Altura del botón de alternar */
+    width: 55px; /* Ancho del botón de alternar */
+    display: flex; /* Usa flexbox para alinear los elementos en el botón */
+    align-items: center; /* Centra verticalmente los elementos en el botón */
+    justify-content: center; /* Centra horizontalmente los elementos en el botón */
+    border-end-end-radius: 50%; /* Bordes redondeados en el extremo del botón */
+    color: var(--sidebar-color); /* Color del ícono en el botón usando la variable definida */
+    font-size: 22px; /* Tamaño de fuente del ícono en el botón */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    transition: var(--tran-03); /* Aplica la transición definida al botón */
+}
+
+
+.sidebar.close header .toggle {
+    margin-top: 10px;
+    transform: translateY(-50%); /* Centra verticalmente el botón cuando la barra lateral está cerrada */
+}
+
+body.dark .sidebar header .toggle {
+    color: var(--text-color); /* Cambia el color del botón en modo oscuro */
+}
+
+.sidebar .menu {
+    margin-top: 35px; /* Margen superior del menú en la barra lateral */
+}
+
+.sidebar .search-box {
+    display: flex; /* Usa flexbox para alinear los elementos en la caja de búsqueda */
+    align-items: center; /* Centra verticalmente el ícono y el input */
+    background: var(--primary-color-light); /* Color de fondo de la caja de búsqueda */
+    border-radius: 6px; /* Bordes redondeados de la caja de búsqueda */
+    padding: 0 10px; /* Espaciado interno horizontal de la caja de búsqueda */
+    height: 40px; /* Altura consistente de la caja de búsqueda */
+    transition: var(--tran-05); /* Transición para animar cambios al cerrar la barra */
+    overflow: hidden; /* Oculta contenido extra al reducir el tamaño */
+    position: relative; /* Posiciona el contenedor relativo a su posición normal */
+    width: 100%; /* Ancho del contenedor */
+    list-style: none;
+}
+
+.sidebar.close .search-box {
+    width: 45px; /* Reduce el ancho de la caja de búsqueda cuando la barra lateral está cerrada */
+    padding: 0; /* Elimina el espaciado interno de la caja de búsqueda */
+    justify-content: center; /* Centra el ícono dentro de la caja de búsqueda */
+
+}
+
+.sidebar.close .search-box input {
+    width: 0; /* Oculta el input en modo cerrado */
+    opacity: 0; /* Hace que el input sea invisible */
+    pointer-events: none; /* Evita interacciones con el input */
+    transition: var(--tran-05); /* Suaviza la animación */
+
+}
+
+.search-box i.icon {
+    font-size: 20px;
+    color: var(--text-color);
+    position: absolute; /* Posiciona el ícono en relación al contenedor */
+    left: -5px; /* Distancia desde el borde izquierdo del contenedor */
+    top: 50%; /* Centra el ícono verticalmente */
+    transform: translateY(-50%);
+}
+
+.search-box input {
+    flex: 1; /* Permite que el input ocupe todo el espacio disponible */
+    outline: none; /* Elimina el borde azul al hacer clic */
+    border: none; /* Sin bordes en el input */
+    background: none; /* Transpar ente para heredar el fondo del contenedor */
+    font-size: 16px; /* Tamaño de fuente del input */
+    font-weight: 500; /* Peso de la fuente del input */
+    color: var(--text-color); /* Color del texto en el input usando la variable definida */
+    transition: var(--tran-05); /* Transición suave al cerrar la caja de búsqueda */
+    padding-left: 40px; /* Espacio a la izquierda para el ícono */
+    width: calc(100% - 40px);
+}
+
+.sidebar li a {
+    height: 100%; /* Altura del enlace igual a la altura del elemento de la lista */
+    width: 100%; /* Ancho del enlace igual al ancho del elemento de la lista */
+    display: flex; /* Usa flexbox para alinear los elementos en el enlace */
+    align-items: center; /* Centra verticalmente los elementos en el enlace */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+    border-radius: 66px; /* Bordes redondeados del enlace */
+    transition: var(--tran-04); /* Aplica la transición definida al enlace */
+}
+
+.sidebar li a:hover {
+    background: var(--primary-color); /* Cambia el fondo del enlace al pasar el mouse */
+}
+
+.sidebar li a:hover .icon,
+.sidebar li a:hover .text {
+    color: var(--sidebar-color); /* Cambia el color del ícono y texto al pasar el mouse */
+}
+
+body.dark .sidebar li a:hover .icon,
+body.dark .sidebar li a:hover .text {
+    color: var(--text-color); /* Cambia el color del ícono y texto en modo oscuro al pasar el mouse */
+}
+
+.sidebar .menu-bar {
+    height: calc(100% - 80px); /* Altura del menú menos la altura del encabezado */
+    display: flex; /* Usa flexbox para alinear los elementos en el menú */
+    flex-direction: column; /* Coloca los elementos en columna */
+    justify-content: space-between; /* Espacia los elementos de manera uniforme */
+}
+
+.menu-bar .mode {
+    position: relative; /* Posiciona el modo de forma relativa */
+    border-radius: 6px; /* Bordes redondeados del contenedor del modo */
+    background: var(--primary-color-light); /* Color de fondo del contenedor del modo */
+    padding: 10px; /* Espaciado interno del contenedor del modo */
+    display: flex; /* Usa flexbox para alinear los elementos en el contenedor del modo */
+    align-items: center; /* Centra verticalmente los elementos en el contenedor del modo */
+}
+
+.menu-bar .mode .moon-sun {
+    height: 50px; /* Altura del contenedor del ícono de luna y sol */
+    width: 60px; /* Ancho del contenedor del ícono de luna y sol */
+    display: flex; /* Usa flexbox para alinear los íconos de luna y sol */
+    align-items: center; /* Centra verticalmente los íconos */
+    justify-content: center; /* Centra horizontalmente los íconos */
+}
+
+.menu-bar .mode i {
+    position: absolute; /* Posiciona los íconos de luna y sol de forma absoluta */
+    transition: var(--tran-03); /* Aplica la transición definida a los íconos */
+}
+
+.menu-bar .mode i.sun {
+    opacity: 0; /* Hace que el ícono del sol sea invisible por defecto */
+}
+
+body.dark .menu-bar .mode i.sun {
+    opacity: 1; /* Hace visible el ícono del sol en modo oscuro */
+}
+
+body.dark .menu-bar .mode i.moon {
+    opacity: 0; /* Hace que el ícono de la luna sea invisible en modo oscuro */
+}
+
+.menu-bar .mode .toggle-switch {
+    position: absolute; /* Posiciona el interruptor de alternar de forma absoluta */
+    right: 0; /* Posiciona el interruptor a la derecha */
+    display: flex; /* Usa flexbox para alinear los elementos en el interruptor */
+    align-items: center; /* Centra verticalmente los elementos en el interruptor */
+    justify-content: center; /* Centra horizontalmente los elementos en el interruptor */
+    height: 100%; /* Altura del interruptor igual a la del contenedor */
+    min-width: 60px; /* Ancho mínimo del interruptor */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el interruptor */
+    border-radius: 6px; /* Bordes redondeados del interruptor */
+    background: var(--primary-color-light); /* Color de fondo del interruptor */
+    transition: var(--tran-05); /* Transición suave al alternar el interruptor */
+}
+
+.toggle-switch .switch {
+    position: relative; /* Posiciona el interruptor de forma relativa */
+    height: 22px; /* Altura del interruptor */
+    width: 44px; /* Ancho del interruptor */
+    border-radius : 25px; /* Bordes redondeados del interruptor */
+    background: var(--toggle-color); /* Color de fondo del interruptor */
+}
+
+.switch::before {
+    content: ""; /* Crea un pseudo-elemento para el círculo del interruptor */
+    position: absolute; /* Posiciona el círculo de forma absoluta dentro del interruptor */
+    height: 15px; /* Altura del círculo del interruptor */
+    width: 15px; /* Ancho del círculo del interruptor */
+    border-radius: 50%; /* Hace que el círculo sea redondo */
+    top: 50%; /* Posiciona el círculo en el centro verticalmente */
+    left: 5px; /* Posiciona el círculo a la izquierda */
+    transform: translateY(-50%); /* Centra verticalmente el círculo */
+    background: var(--sidebar-color); /* Color de fondo del círculo usando la variable definida */
+    transition: var(--tran-03); /* Aplica la transición definida al círculo */
+}
+
+body.dark .switch::before {
+    left: 25px; /* Mueve el círculo a la derecha en modo oscuro */
+}
+
+.home {
+    position: relative; /* Posiciona el contenedor principal de forma relativa */
+    height: 100vh; /* Altura del contenedor principal igual a la altura de la ventana */
+    left: 250px; /* Desplaza el contenedor principal a la derecha para dejar espacio a la barra lateral */
+    width: calc(100% - 250px); /* Ancho del contenedor principal restando el ancho de la barra lateral */
+    background: var(--body-color); /* Color de fondo del contenedor principal usando la variable definida */
+    transition: var(--tran-05); /* Aplica la transición definida al contenedor principal */
+}
+
+.home .text {
+    font-size: 30px; /* Tamaño de fuente del texto en el contenedor principal */
+    font-weight: 500; /* Peso de la fuente del texto */
+    color: var(--text-color); /* Color del texto usando la variable definida */
+    padding: 8px 40px; /* Espaciado interno del texto en el contenedor principal */
+}
+
+.sidebar.close ~ .home {
+    left: 88px; /* Desplaza el contenedor principal a la derecha cuando la barra lateral está cerrada */
+    width: calc(100% - 88px); /* Ajusta el ancho del contenedor principal cuando la barra lateral está cerrada */
+}
+
