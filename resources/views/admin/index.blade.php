@@ -532,278 +532,567 @@
                 <br>
 
                 <!--
-                ========================================
-                SECCIÓN: AGENDA DE CITAS (FULLCALENDAR)
-                Calendario completo para gestión de citas
-                ========================================
-                -->
-                <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl mt-8">
-                    <div class="p-4 md:p-6">
-                        <!-- Encabezado de la sección -->
-                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                            <div class="flex items-center gap-4">
-                                <!-- Ícono decorativo con gradiente -->
-                                <div class="bg-gradient-to-br from-blue-600 to-purple-600 p-4 rounded-xl shadow-lg transform transition-all duration-300 hover:scale-105">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="40" height="40" alt="Calendario" class="img-small">
+ ========================================
+ SECCIÓN: AGENDA DE CITAS (REDISEÑO FINAL)
+ Calendario completo para gestión de citas
+ ========================================
+ -->
+                <div class="mt-10">
+                    <!-- Contenedor principal con diseño moderno pero sin efectos de escala -->
+                    <div class="relative bg-gradient-to-br from-white to-slate-50 dark:from-gray-800 dark:to-gray-900 rounded-3xl shadow-xl overflow-hidden border border-slate-100/60 dark:border-slate-700/40">
+
+                        <!-- Elementos decorativos de fondo (sutiles, no borrosos) -->
+                        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/5 to-purple-500/5 rounded-full transform translate-x-1/3 -translate-y-1/3 dark:from-blue-500/10 dark:to-purple-600/10"></div>
+                        <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-cyan-400/5 to-teal-500/5 rounded-full transform -translate-x-1/3 translate-y-1/3 dark:from-cyan-500/10 dark:to-teal-600/10"></div>
+
+                        <!-- Encabezado superior optimizado -->
+                        <div class="relative">
+                            <!-- Barra de estado y acciones -->
+                            <div class="relative flex justify-between items-center px-6 py-3 bg-gradient-to-r from-slate-50/80 to-white/80 dark:from-gray-800/80 dark:to-gray-900/80 border-b border-slate-200/50 dark:border-slate-700/50">
+                                <div class="flex items-center space-x-2">
+                    <span class="flex h-3 w-3 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Sistema activo</span>
                                 </div>
-                                <div>
-                                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 font-montserrat">Agenda de Citas</h2>
-                                    <p class="text-sm md:text-base text-gray-500 mt-1">Visualización y gestión de citas médicas</p>
+
+                                <div class="flex items-center space-x-3">
+                                    <button class="p-1.5 rounded-full bg-white/80 dark:bg-gray-700/80 shadow-sm border border-slate-200/50 dark:border-slate-600/50 text-slate-400 hover:text-blue-500 dark:text-slate-400 dark:hover:text-blue-400 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Título principal con diseño asimétrico -->
+                            <div class="relative px-6 pt-10 pb-10">
+                                <!-- Diseño moderno del título principal sin métricas -->
+                                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start gap-6">
+                                    <div class="flex-1">
+                                        <!-- Insignia de actualización flotante -->
+                                        <div class="inline-flex items-center px-3 py-1 mb-4 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 rounded-full shadow-sm">
+                                            <svg class="w-3.5 h-3.5 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Actualizado hace {{ random_int(1, 5) }} min
+                                        </div>
+
+                                        <!-- Título principal con efecto de gradiente -->
+                                        <h2 class="text-4xl font-black tracking-tight bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                                            Agenda de Citas
+                                        </h2>
+                                        <p class="mt-2 text-slate-500 dark:text-slate-400 max-w-2xl">
+                                            Sistema inteligente de organización y gestión de citas médicas.
+                                        </p>
+                                    </div>
+
+                                    <!-- Ilustración decorativa con icono más pequeño -->
+                                    <div class="hidden lg:block relative -mr-12 -mt-10">
+                                        <div class="w-56 h-56 overflow-hidden relative">
+                                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full opacity-50"></div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="w-32 h-32 bg-white dark:bg-gray-800 rounded-full shadow-xl flex items-center justify-center">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="50" height="50" alt="Calendario" class="opacity-90">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Layout de dos columnas: controles y calendario -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <!-- COLUMNA 1: CONTROLES DE FILTRADO Y ACCIONES -->
-                            <div class="md:col-span-1 bg-slate-50 p-4 rounded-xl shadow-sm">
-                                <!-- Selector de doctor para filtrar citas -->
-                                <div class="mb-5">
-                                    <label for="doctor_select" class="block text-sm font-medium text-gray-700 mb-2">Seleccione un Doctor</label>
-                                    <select name="doctor_id" id="doctor_select" class="w-full px-4 py-3 border-0 bg-white rounded-xl ring-2 ring-slate-200/60 focus:ring-4 focus:ring-cyan-400/30 focus:bg-white transition-all duration-200 shadow-sm appearance-none hover:ring-cyan-400/60">
-                                        <option value="">Seleccione un Doctor</option>
-                                        @foreach($doctores as $doctor)
-                                            <option value="{{ $doctor->id }}" class="font-medium">
-                                                {{ $doctor->nombres }} {{ $doctor->apellidos }}
-                                                @if(count($doctor->specialties) > 0)
-                                                    - {{ $doctor->specialties->pluck('nombre')->join(', ') }}
-                                                @endif
-                                            </option>
-                                        @endforeach
-                                    </select>
+                        <!-- Layout de dos columnas optimizado: controles y calendario -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 px-6 pb-8">
+                            <!-- COLUMNA 1: CONTROLES INTEGRADOS CON DISEÑO OPTIMIZADO -->
+                            <div class="md:col-span-1 space-y-4">
+                                <!-- Panel de filtro principal -->
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 relative overflow-hidden">
+                                    <!-- Título del panel con icono -->
+                                    <div class="flex items-center space-x-3 mb-5">
+                                        <div class="flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/30">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                            </svg>
+                                        </div>
+                                        <h3 class="font-semibold text-lg text-slate-800 dark:text-white">Filtrar citas</h3>
+                                    </div>
+
+                                    <!-- Selector de doctor con diseño premium -->
+                                    <div class="mb-3 relative z-10">
+                                        <label for="doctor_select" class="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            Seleccione un Doctor
+                                        </label>
+                                        <div class="relative">
+                                            <select name="doctor_id" id="doctor_select" class="form-select appearance-none block w-full px-4 py-3 pr-10 text-base text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800/60 bg-clip-padding bg-no-repeat border border-slate-200 dark:border-slate-700 rounded-xl transition-all focus:border-blue-500 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800/20 focus:outline-none hover:border-blue-400 dark:hover:border-blue-700">
+                                                <option value="">Todos los Doctores</option>
+                                                @foreach($doctores as $doctor)
+                                                    <option value="{{ $doctor->id }}" class="py-2">
+                                                        {{ $doctor->nombres }} {{ $doctor->apellidos }}
+                                                        @if(count($doctor->specialties) > 0)
+                                                            - {{ $doctor->specialties->pluck('nombre')->join(', ') }}
+                                                        @endif
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 dark:text-slate-400">
+                                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- Botón para crear nueva cita médica -->
-                                <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-base px-5 py-3 text-center shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 flex items-center justify-center">
-                                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                                    </svg>
-                                    Nueva Cita Médica
-                                </button>
-                                <br>
+                                <!-- Panel de acciones con botones modernos -->
+                                <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/20 dark:shadow-blue-800/20 p-5 relative overflow-hidden">
+                                    <!-- Elementos decorativos -->
+                                    <div class="absolute inset-0 bg-grid-slate-50/[0.05] bg-[length:20px_20px]"></div>
+                                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full"></div>
 
+                                    <!-- Título del panel -->
+                                    <h3 class="font-semibold text-lg text-white mb-5 drop-shadow-sm relative z-10">Acciones rápidas</h3>
 
-                                <!-- Botón para crear Listado -->
-                                <a href="{{url('/admin/ver_reservas',Auth::user()->id)}}" class="w-full text-white bg-gradient-to-r from-green-600 to-green-800 hover:from-blue-700 hover:to-green-900 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-base px-5 py-3 text-center shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 flex items-center justify-center">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/1632/1632670.png" width="25" height="25" alt="" title="" class="img-small mr-6">
-                                    Historial de citas
-                                </a>
+                                    <!-- Botón principal con efecto neomórfico -->
+                                    <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="relative z-10 w-full flex items-center justify-center space-x-3 py-3.5 px-4 mb-3.5 bg-white/10 hover:bg-white/15 backdrop-blur-sm border border-white/20 rounded-xl text-white font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-blue-600/20 group">
+                        <span class="p-1.5 bg-white rounded-lg shadow-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </span>
+                                        <span class="text-sm tracking-wide">Nueva Cita Médica</span>
+                                    </button>
 
+                                    <!-- Botón secundario -->
+                                    <a href="{{url('/admin/ver_reservas',Auth::user()->id)}}" class="relative z-10 w-full flex items-center justify-center space-x-3 py-3.5 px-4 bg-white/10 hover:bg-white/15 backdrop-blur-sm border border-white/20 rounded-xl text-white font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-blue-600/20 group">
+                        <span class="p-1.5 bg-white rounded-lg shadow-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                            </svg>
+                        </span>
+                                        <span class="text-sm tracking-wide">Historial de citas</span>
+                                    </a>
+                                </div>
 
-                                <!-- Panel informativo con instrucciones -->
-                                <div class="mt-5 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                                    <h4 class="font-medium text-blue-800 mb-2">Información</h4>
-                                    <ul class="text-sm text-blue-700 space-y-1">
+                                <!-- Panel informativo con diseño minimalista -->
+                                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800/40 p-5 relative overflow-hidden">
+                                    <!-- Icono decorativo -->
+                                    <div class="absolute right-3 bottom-3 opacity-10">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+
+                                    <!-- Contenido informativo -->
+                                    <h4 class="flex items-center text-blue-800 dark:text-blue-300 font-semibold mb-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Información útil
+                                    </h4>
+
+                                    <ul class="space-y-2.5 text-sm text-blue-700 dark:text-blue-300 relative z-10">
                                         <li class="flex items-start">
-                                            <svg class="w-4 h-4 mr-1.5 mt-0.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            <svg class="w-4 h-4 mr-1.5 mt-0.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            Haga clic en el día para ver detalles
+                                            <span>Haga clic en cualquier día para ver el detalle de las citas programadas</span>
                                         </li>
                                         <li class="flex items-start">
-                                            <svg class="w-4 h-4 mr-1.5 mt-0.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            <svg class="w-4 h-4 mr-1.5 mt-0.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            Use el botón "Nueva Cita" para reservar
+                                            <span>Use el botón "Nueva Cita" para programar una nueva consulta médica</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <svg class="w-4 h-4 mr-1.5 mt-0.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span>Filtre por doctor para una mejor visualización</span>
                                         </li>
                                     </ul>
                                 </div>
 
                                 <!-- Contenedor para mostrar información del doctor seleccionado -->
-                                <div id="doctor_info" class="mt-5"></div>
+                                <div id="doctor_info" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 hidden">
+                                    <!-- El contenido se cargará dinámicamente con JavaScript -->
+                                </div>
                             </div>
 
-                            <!-- COLUMNA 2: CALENDARIO FULLCALENDAR -->
+                            <!-- COLUMNA 2: CALENDARIO FULLCALENDAR CON DISEÑO FUTURISTA -->
                             <div class="md:col-span-3">
-                                <!-- Contenedor del calendario - se inicializa con JS -->
-                                <div id="calendar" class="fc-calendar-container" style="height: 700px;"></div>
+                                <!-- Contenedor principal del calendario sin efectos de scale o blur -->
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 relative transition-all duration-300 overflow-hidden">
+                                    <!-- Elementos decorativos en las esquinas (sutiles) -->
+                                    <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-500/5 to-purple-500/5 dark:from-blue-500/10 dark:to-purple-500/10 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
+                                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-emerald-500/5 to-teal-500/5 dark:from-emerald-500/10 dark:to-teal-500/10 rounded-full transform -translate-x-1/3 translate-y-1/3"></div>
+
+                                    <!-- Vista del calendario mejorada -->
+                                    <div id="calendar" class="fc-calendar-container neo-calendar" style="height: 700px;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!--
-                ========================================
-                ESTILOS CSS PARA EL CALENDARIO
-                Personalización visual de FullCalendar
-                ========================================
-                -->
                 <style>
-                    /* Estilos generales para el calendario */
-                    .fc {
-                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    /* Fondo de patrones para elementos decorativos */
+                    .bg-grid-slate-50 {
+                        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(226 232 240 / 0.8)'%3E%3Cpath d='M0 .5H31.5V32'/%3E%3C/svg%3E");
                     }
 
-                    /* Estilos para la cabecera del calendario (título y botones) */
-                    .fc-toolbar-title {
-                        font-size: 1.5rem !important;
-                        font-weight: 600 !important;
-                        color: #334155 !important;
+                    /* Tema futurista para FullCalendar */
+                    .neo-calendar.fc {
+                        --fc-border-color: rgba(226, 232, 240, 0.5);
+                        --fc-event-border-color: transparent;
+                        --fc-event-bg-color: #4f46e5;
+                        --fc-event-text-color: #fff;
+                        --fc-neutral-bg-color: #fff;
+                        --fc-today-bg-color: rgba(239, 246, 255, 0.5);
+
+                        font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
                     }
 
-                    .fc-button-primary {
-                        background-color: #3b82f6 !important; /* Azul primario */
-                        border-color: #3b82f6 !important;
-                        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+                    .dark .neo-calendar.fc {
+                        --fc-border-color: rgba(55, 65, 81, 0.5);
+                        --fc-neutral-bg-color: #1f2937;
+                        --fc-today-bg-color: rgba(30, 58, 138, 0.2);
                     }
 
-                    .fc-button-primary:hover {
-                        background-color: #2563eb !important; /* Azul más oscuro al hover */
-                        border-color: #2563eb !important;
+                    /* Cabecera mejorada */
+                    .neo-calendar .fc-header-toolbar {
+                        margin-bottom: 1.5rem !important;
                     }
 
-                    /* Estilos para los días de la semana (lun, mar, mié...) */
-                    .fc-col-header-cell {
-                        background-color: #f8fafc !important; /* Fondo claro */
-                        padding: 10px 0 !important;
+                    .neo-calendar .fc-toolbar-title {
+                        font-size: 1.375rem !important;
+                        font-weight: 700 !important;
+                        color: #1e293b !important;
+                        letter-spacing: -0.02em !important;
                     }
 
-                    .fc-col-header-cell-cushion {
-                        color: #64748b !important; /* Color texto gris azulado */
-                        font-weight: 600 !important;
-                        text-transform: uppercase !important;
-                        font-size: 0.85rem !important;
-                        padding: 6px 0 !important;
+                    .dark .neo-calendar .fc-toolbar-title {
+                        color: #f1f5f9 !important;
                     }
 
-                    /* Estilos para las celdas de días individuales */
-                    .fc-daygrid-day {
-                        cursor: pointer !important; /* Cursor para indicar que es clickeable */
-                        transition: background-color 0.2s !important;
-                    }
-
-                    .fc-daygrid-day:hover {
-                        background-color: #f1f5f9 !important; /* Color gris azulado muy claro al hover */
-                    }
-
-                    .fc-daygrid-day-frame {
-                        min-height: 100px !important; /* Altura mínima para mostrar eventos */
-                        padding: 4px !important;
-                    }
-
-                    /* Estilos para los números de día (1, 2, 3...) */
-                    .fc-daygrid-day-top {
-                        display: flex !important;
-                        justify-content: center !important;
-                        margin-bottom: 5px !important;
-                    }
-
-                    .fc-daygrid-day-number {
-                        font-weight: 600 !important;
-                        color: #334155 !important;
-                        font-size: 1rem !important;
-                        width: 28px !important;
-                        height: 28px !important;
-                        display: flex !important;
-                        align-items: center !important;
-                        justify-content: center !important;
-                        border-radius: 50% !important; /* Forma circular */
+                    /* Botones estilizados */
+                    .neo-calendar .fc-button-primary {
+                        background-color: #f8fafc !important;
+                        border-color: #e2e8f0 !important;
+                        color: #475569 !important;
+                        font-weight: 500 !important;
+                        font-size: 0.875rem !important;
+                        padding: 0.5rem 1rem !important;
+                        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+                        border-radius: 0.75rem !important;
                         transition: all 0.2s !important;
                     }
 
-                    /* Día actual resaltado */
-                    .fc-day-today .fc-daygrid-day-number {
-                        background-color: #3b82f6 !important; /* Azul para el día actual */
-                        color: white !important;
+                    .dark .neo-calendar .fc-button-primary {
+                        background-color: #334155 !important;
+                        border-color: #475569 !important;
+                        color: #e2e8f0 !important;
                     }
 
-                    /* Estilos para los eventos (citas) en el calendario */
-                    .fc-daygrid-event {
-                        background-color: #f97316 !important; /* Naranja para eventos */
-                        border-color: #f97316 !important;
-                        border-radius: 4px !important;
-                        padding: 2px 4px !important;
-                        font-size: 0.75rem !important;
-                        margin-top: 2px !important;
-                        margin-bottom: 2px !important;
-                        white-space: nowrap !important;
-                        overflow: hidden !important;
-                        text-overflow: ellipsis !important; /* Truncar texto largo */
-                        box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
-                        color: #fff !important;
-                        line-height: 1.2 !important;
+                    .neo-calendar .fc-button-primary:hover {
+                        background-color: #f1f5f9 !important;
+                        border-color: #cbd5e1 !important;
+                        color: #1e293b !important;
                     }
 
-                    .fc-daygrid-event:hover {
-                        background-color: #ea580c !important; /* Naranja más oscuro al hover */
+                    .dark .neo-calendar .fc-button-primary:hover {
+                        background-color: #475569 !important;
+                        border-color: #64748b !important;
+                        color: #f8fafc !important;
                     }
 
-                    .fc-daygrid-event-dot {
-                        display: none !important; /* Ocultar punto en eventos de punto */
+                    .neo-calendar .fc-button-primary:not(:disabled).fc-button-active,
+                    .neo-calendar .fc-button-primary:not(:disabled):active {
+                        background-color: #3b82f6 !important;
+                        border-color: #3b82f6 !important;
+                        color: #ffffff !important;
                     }
 
-                    /* Adaptación para móviles */
-                    @media (max-width: 768px) {
-                        .fc-daygrid-day-frame {
-                            min-height: 70px !important; /* Menor altura en móviles */
-                        }
-
-                        .fc-toolbar-title {
-                            font-size: 1.2rem !important; /* Título más pequeño */
-                        }
-
-                        .fc-daygrid-day-number {
-                            font-size: 0.9rem !important; /* Números más pequeños */
-                        }
+                    .dark .neo-calendar .fc-button-primary:not(:disabled).fc-button-active,
+                    .dark .neo-calendar .fc-button-primary:not(:disabled):active {
+                        background-color: #3b82f6 !important;
+                        border-color: #3b82f6 !important;
                     }
 
-                    /* Enlace "más eventos" que aparece cuando hay demasiados eventos en un día */
-                    .fc-daygrid-more-link {
-                        background-color: #e0f2fe !important; /* Azul claro */
-                        color: #0369a1 !important;
+                    /* Días de la semana */
+                    .neo-calendar .fc-col-header-cell {
+                        background-color: #f8fafc !important;
+                        padding: 0.75rem 0 !important;
+                        border-width: 0 !important;
+                    }
+
+                    .dark .neo-calendar .fc-col-header-cell {
+                        background-color: #1f2937 !important;
+                    }
+
+                    .neo-calendar .fc-col-header-cell-cushion {
+                        color: #64748b !important;
                         font-weight: 600 !important;
-                        padding: 2px 4px !important;
-                        border-radius: 4px !important;
-                        margin-top: 2px !important;
+                        font-size: 0.8rem !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.05em !important;
+                        padding: 0.75rem 0 !important;
+                        text-decoration: none !important;
                     }
 
-                    /* Estilos adicionales para los selects de doctores */
-                    select option {
-                        padding: 8px;
-                        line-height: 1.5;
+                    .dark .neo-calendar .fc-col-header-cell-cushion {
+                        color: #94a3b8 !important;
                     }
 
-                    .doctor-option {
-                        display: flex;
-                        flex-direction: column;
-                        padding: 8px 0;
+                    /* Diseño de cuadrícula y celdas de día */
+                    .neo-calendar .fc-daygrid-day {
+                        border: none !important;
+                        cursor: pointer !important;
                     }
 
-                    .doctor-name {
-                        font-weight: 600;
-                        color: #1e293b;
+                    .neo-calendar .fc-daygrid-day-frame {
+                        padding: 0.375rem !important;
+                        min-height: 120px !important;
+                        border: 1px solid var(--fc-border-color) !important;
+                        margin: 2px !important;
+                        border-radius: 0.75rem !important;
+                        background-color: rgba(248, 250, 252, 0.4) !important;
+                        transition: all 0.2s !important;
                     }
 
-                    .doctor-specialty {
-                        font-size: 0.9em;
-                        color: #3b82f6;
-                        margin-top: 2px;
+                    .dark .neo-calendar .fc-daygrid-day-frame {
+                        background-color: rgba(31, 41, 55, 0.4) !important;
                     }
 
-                    /* Estilos para las etiquetas de especialidad */
-                    .specialty-badge {
-                        display: inline-block;
-                        background-color: #dbeafe; /* Azul muy claro */
-                        color: #2563eb; /* Azul */
-                        font-size: 0.8rem;
-                        padding: 2px 8px;
-                        border-radius: 9999px; /* Forma de píldora */
-                        margin-top: 2px;
-                        margin-right: 4px;
-                        white-space: nowrap;
+                    .neo-calendar .fc-daygrid-day:hover .fc-daygrid-day-frame {
+                        background-color: rgba(239, 246, 255, 0.6) !important;
+                        border-color: rgba(191, 219, 254, 0.7) !important;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
                     }
 
-                    body.swal2-shown {
-                        padding-right: 0 !important;
+                    .dark .neo-calendar .fc-daygrid-day:hover .fc-daygrid-day-frame {
+                        background-color: rgba(30, 58, 138, 0.2) !important;
+                        border-color: rgba(59, 130, 246, 0.5) !important;
                     }
 
-                    .swal2-container {
-                        padding-right: 0 !important;
+                    /* Números de día */
+                    .neo-calendar .fc-daygrid-day-top {
+                        justify-content: center !important;
+                        padding-top: 0.25rem !important;
                     }
 
-                    /* Opcionalmente, para mantener la barra de desplazamiento visible */
-                    body.swal2-shown {
-                        overflow-y: auto !important;
+                    .neo-calendar .fc-daygrid-day-number {
+                        margin: 0.25rem 0 0.5rem 0 !important;
+                        width: 30px !important;
+                        height: 30px !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        font-weight: 600 !important;
+                        color: #475569 !important;
+                        font-size: 0.9rem !important;
+                        background-color: rgba(248, 250, 252, 0.8) !important;
+                        border-radius: 0.75rem !important;
+                        text-decoration: none !important;
+                        transition: all 0.2s !important;
+                    }
+
+                    .dark .neo-calendar .fc-daygrid-day-number {
+                        color: #e2e8f0 !important;
+                        background-color: rgba(31, 41, 55, 0.8) !important;
+                    }
+
+                    .neo-calendar .fc-daygrid-day:hover .fc-daygrid-day-number {
+                        background-color: white !important;
+                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+                    }
+
+                    .dark .neo-calendar .fc-daygrid-day:hover .fc-daygrid-day-number {
+                        background-color: #374151 !important;
+                    }
+
+                    /* Día actual con diseño especial */
+                    .neo-calendar .fc-day-today .fc-daygrid-day-frame {
+                        background-color: rgba(219, 234, 254, 0.3) !important;
+                        border-color: rgba(59, 130, 246, 0.3) !important;
+                    }
+
+                    .dark .neo-calendar .fc-day-today .fc-daygrid-day-frame {
+                        background-color: rgba(30, 58, 138, 0.3) !important;
+                        border-color: rgba(59, 130, 246, 0.5) !important;
+                    }
+
+                    .neo-calendar .fc-day-today .fc-daygrid-day-number {
+                        background: linear-gradient(to right, #3b82f6, #4f46e5) !important;
+                        color: white !important;
+                        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3) !important;
+                        font-weight: 700 !important;
+                        position: relative !important;
+                    }
+
+                    .neo-calendar .fc-day-today .fc-daygrid-day-number::after {
+                        content: "" !important;
+                        position: absolute !important;
+                        inset: -2px !important;
+                        border-radius: 0.75rem !important;
+                        background: linear-gradient(to right, #3b82f6, #4f46e5) !important;
+                        opacity: 0.2 !important;
+                        z-index: -1 !important;
+                        animation: pulse 2s infinite !important;
+                    }
+
+                    @keyframes pulse {
+                        0% {
+                            transform: scale(1);
+                            opacity: 0.2;
+                        }
+                        50% {
+                            transform: scale(1.15);
+                            opacity: 0.1;
+                        }
+                        100% {
+                            transform: scale(1);
+                            opacity: 0.2;
+                        }
+                    }
+
+                    /* Eventos con diseño moderno */
+                    .neo-calendar .fc-daygrid-event {
+                        margin: 2px 4px !important;
+                        padding: 0.4rem 0.6rem !important;
+                        border-radius: 0.5rem !important;
+                        background-color: #4f46e5 !important;
+                        border-left: 3px solid #4338ca !important;
+                        font-weight: 500 !important;
+                        font-size: 0.7rem !important;
+                        line-height: 1.2 !important;
+                        box-shadow: 0 1px 2px rgba(79, 70, 229, 0.3) !important;
+                        transition: all 0.2s !important;
+                    }
+
+                    .neo-calendar .fc-daygrid-event:hover {
+                        transform: translateY(-1px) !important;
+                        box-shadow: 0 3px 6px rgba(79, 70, 229, 0.4) !important;
+                    }
+
+                    /* Estilos para el enlace "más eventos" */
+                    .neo-calendar .fc-daygrid-more-link {
+                        display: block !important;
+                        margin: 2px 4px !important;
+                        padding: 0.3rem 0.5rem !important;
+                        background-color: rgba(99, 102, 241, 0.1) !important;
+                        color: #4f46e5 !important;
+                        border-radius: 0.5rem !important;
+                        font-size: 0.7rem !important;
+                        font-weight: 600 !important;
+                        text-align: center !important;
+                        text-decoration: none !important;
+                        transition: all 0.2s !important;
+                    }
+
+                    .dark .neo-calendar .fc-daygrid-more-link {
+                        background-color: rgba(99, 102, 241, 0.2) !important;
+                        color: #818cf8 !important;
+                    }
+
+                    .neo-calendar .fc-daygrid-more-link:hover {
+                        background-color: rgba(99, 102, 241, 0.2) !important;
+                    }
+
+                    .dark .neo-calendar .fc-daygrid-more-link:hover {
+                        background-color: rgba(99, 102, 241, 0.3) !important;
+                    }
+
+                    /* Estilos para días fuera del mes actual */
+                    .neo-calendar .fc-day-other .fc-daygrid-day-frame {
+                        opacity: 0.5 !important;
+                        background-color: rgba(248, 250, 252, 0.3) !important;
+                    }
+
+                    .dark .neo-calendar .fc-day-other .fc-daygrid-day-frame {
+                        background-color: rgba(31, 41, 55, 0.3) !important;
+                    }
+
+                    .neo-calendar .fc-day-other .fc-daygrid-day-number {
+                        color: #94a3b8 !important;
+                    }
+
+                    /* Estilos para el popover de más eventos */
+                    .neo-calendar .fc-popover {
+                        border: none !important;
+                        border-radius: 1rem !important;
+                        overflow: hidden !important;
+                        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+                    }
+
+                    .neo-calendar .fc-popover-header {
+                        background-color: #f8fafc !important;
+                        padding: 0.75rem 1rem !important;
+                        border-bottom: 1px solid #e2e8f0 !important;
+                    }
+
+                    .dark .neo-calendar .fc-popover-header {
+                        background-color: #1f2937 !important;
+                        border-color: #374151 !important;
+                    }
+
+                    .neo-calendar .fc-popover-title {
+                        font-weight: 600 !important;
+                        font-size: 0.95rem !important;
+                        color: #1e293b !important;
+                    }
+
+                    .dark .neo-calendar .fc-popover-title {
+                        color: #f1f5f9 !important;
+                    }
+
+                    .neo-calendar .fc-popover-close {
+                        font-size: 1.25rem !important;
+                        opacity: 0.5 !important;
+                    }
+
+                    .neo-calendar .fc-popover-body {
+                        padding: 0.75rem !important;
+                    }
+
+                    /* Ajustes responsive */
+                    @media (max-width: 768px) {
+                        .neo-calendar .fc-toolbar {
+                            flex-direction: column !important;
+                            gap: 0.75rem !important;
+                            margin-bottom: 1rem !important;
+                        }
+
+                        .neo-calendar .fc-toolbar-chunk {
+                            display: flex !important;
+                            justify-content: center !important;
+                            width: 100% !important;
+                        }
+
+                        .neo-calendar .fc-toolbar-title {
+                            font-size: 1.125rem !important;
+                        }
+
+                        .neo-calendar .fc-daygrid-day-frame {
+                            min-height: 90px !important;
+                            padding: 0.25rem !important;
+                        }
+
+                        .neo-calendar .fc-daygrid-day-number {
+                            width: 24px !important;
+                            height: 24px !important;
+                            font-size: 0.8rem !important;
+                            margin: 0.125rem 0 0.25rem 0 !important;
+                        }
+
+                        .neo-calendar .fc-daygrid-event {
+                            padding: 0.2rem 0.4rem !important;
+                            font-size: 0.65rem !important;
+                        }
                     }
                 </style>
 

@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\DesparasitacionMascota;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+class DesparasitacionMascotaController extends Controller
+{
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mascota_id' => 'required|exists:mascotas,id',
+            'medicamento' => 'required|string|max:255',
+            'fecha_aplicacion' => 'required|date',
+            'fecha_proxima' => 'nullable|date|after:fecha_aplicacion',
+            'peso_aplicacion' => 'nullable|numeric|between:0.1,999.99',
+            'notas' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        DesparasitacionMascota::create($request->all());
+
+        return redirect()->back()
+            ->with('success', 'Desparasitación registrada correctamente');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, DesparasitacionMascota $desparasitacion)
+    {
+        $validator = Validator::make($request->all(), [
+            'medicamento' => 'required|string|max:255',
+            'fecha_aplicacion' => 'required|date',
+            'fecha_proxima' => 'nullable|date|after:fecha_aplicacion',
+            'peso_aplicacion' => 'nullable|numeric|between:0.1,999.99',
+            'notas' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $desparasitacion->update($request->all());
+
+        return redirect()->back()
+            ->with('success', 'Desparasitación actualizada correctamente');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(DesparasitacionMascota $desparasitacion)
+    {
+        $desparasitacion->delete();
+
+        return redirect()->back()
+            ->with('success', 'Desparasitación eliminada correctamente');
+    }
+}

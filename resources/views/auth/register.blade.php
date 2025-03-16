@@ -33,8 +33,7 @@
                 <!-- Nombre -->
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
-                    <input id="name" type="text" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition"
-                           name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                    <input id="name" type="text" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition" name="name" value="{{ old('name') }}" required autocomplete="name" placeholder="Coloque su nombre" autofocus>
                     @error('name')
                     <span class="text-sm text-red-600 mt-1 block" role="alert">
                         <strong>{{ $message }}</strong>
@@ -45,8 +44,7 @@
                 <!-- Correo Electrónico -->
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
-                    <input id="email" type="email" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition"
-                           name="email" value="{{ old('email') }}" required autocomplete="email">
+                    <input id="email" type="email" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Coloque correo electronico">
                     @error('email')
                     <span class="text-sm text-red-600 mt-1 block" role="alert">
                         <strong>{{ $message }}</strong>
@@ -57,8 +55,7 @@
                 <!-- Contraseña -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
-                    <input id="password" type="password" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition"
-                           name="password" required autocomplete="new-password">
+                    <input id="password" type="password" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition" name="password" required autocomplete="new-password" placeholder="Coloque una contraseña de 8 digitos">
                     @error('password')
                     <span class="text-sm text-red-600 mt-1 block" role="alert">
                         <strong>{{ $message }}</strong>

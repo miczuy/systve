@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Paciente;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Password;
+use App\Models\User;
+
+
+
 class PacienteController extends Controller
 {
     /**
@@ -13,7 +20,11 @@ class PacienteController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Paciente::query();
+
+        // Usamos una subconsulta para obtener pacientes con usuarios activos
+        $query = Paciente::whereHas('user', function ($query) {
+            $query->where('status', true);
+        });
 
         // Búsqueda
         if ($request->filled('search')) {
@@ -28,7 +39,7 @@ class PacienteController extends Controller
             });
         }
 
-        $pacientes = $query->paginate(10); // Mantiene los 10 registros por página
+        $pacientes = $query->paginate(10);
 
         return view('admin.pacientes.index', compact('pacientes'));
     }
@@ -123,6 +134,19 @@ class PacienteController extends Controller
      */
     public function create()
     {
+        $usuario = auth()->user();
+
+        // Si el usuario está autenticado y es paciente, buscamos su perfil
+        if ($usuario) {
+            $paciente = Paciente::where('user_id', $usuario->id)->first();
+
+            if ($paciente) {
+                // Si ya existe el perfil del paciente, mostramos el formulario con datos
+                return view('admin.pacientes.create', compact('paciente'));
+            }
+        }
+
+        // Si no hay usuario o no tiene perfil, mostramos el formulario vacío
         return view('admin.pacientes.create');
     }
 
@@ -132,9 +156,9 @@ class PacienteController extends Controller
         $cedulaCompleta = $request->input('nacionalidad') . '-' . $request->input('cedula');
 
         // Validación de los datos ingresados
-        $request->validate([
-            'nombres' => 'nullable|string|max:255',
-            'apellidos' => 'nullable|string|max:255',
+        $validator = Validator::make($request->all(), [
+            'nombres' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
             'nacionalidad' => 'required|in:V,E',
             'cedula' => 'required|string|max:100',
             'fecha_nacimiento' => 'nullable|date',
@@ -143,47 +167,137 @@ class PacienteController extends Controller
             'ocupacion' => 'nullable|string|max:255',
             'estado_civil' => 'nullable|in:Soltero(a),Casado(a),Divorciado(a),Viudo(a)',
             'ocupacion_actual' => 'nullable|string|max:255',
-            'telefono' => 'nullable|string|max:15',
+            'telefono' => 'required|string|max:15',
             'direccion' => 'required|string|max:500',
-            'email' => 'required|email|max:250|unique:pacientes,correo',
+            'email' => 'required|email|max:250|unique:users,email',
         ]);
 
-        try {
-            // Verificar si la cédula concatenada ya existe en la base de datos
-            if (Paciente::where('cedula', $cedulaCompleta)->exists()) {
-                return redirect()->route('admin.pacientes.index')
-                    ->with('mensaje', 'La cédula ingresada ya está registrada. Por favor, ingrese una cédula diferente.')
-                    ->with('icono', 'error'); // Cambiar el ícono a "error"
-            }
-
-            // Crear el paciente
-            $paciente = new Paciente();
-
-            $paciente->nombres = $request->input('nombres');
-            $paciente->apellidos = $request->input('apellidos');
-            $paciente->cedula = $cedulaCompleta;
-            $paciente->fecha_nacimiento = $request->input('fecha_nacimiento');
-            $paciente->sexo = $request->input('sexo');
-            $paciente->edad = $request->input('edad');
-            $paciente->ocupacion = $request->input('ocupacion');
-            $paciente->estado_civil = $request->input('estado_civil');
-            $paciente->ocupacion_actual = $request->input('ocupacion_actual');
-            $paciente->telefono = $request->input('telefono');
-            $paciente->direccion = $request->input('direccion');
-            $paciente->correo = $request->input('email');
-
-            $paciente->save(); // Guardar en la base de datos
-
-
-            return redirect()->route('admin.pacientes.index')
-                ->with('mensaje', 'Se registró al paciente correctamente')
-                ->with('icono', 'success');
+        // Si se está creando un usuario, validar la contraseña
+        if ($request->has('create_user') && $request->input('create_user')) {
+            $validator->addRules([
+                'password' => 'required|min:6|confirmed',
+            ]);
         }
 
-        catch (QueryException $e) {
-            // Manejar errores inesperados (por ejemplo, problemas de conexión)
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Verificar explícitamente si la cédula ya existe en otro paciente
+        $cedulaExistente = Paciente::where('cedula', $cedulaCompleta)->first();
+        if ($cedulaExistente) {
+            return redirect()->back()
+                ->withInput()
+                ->with('mensaje', 'La cédula ' . $cedulaCompleta . ' ya está registrada para otro paciente. Por favor, verifique sus datos.')
+                ->with('icono', 'error');
+        }
+
+        // Iniciar transacción de base de datos
+        \DB::beginTransaction();
+
+        try {
+            // Verificar si el usuario ya tiene un perfil de paciente
+            $usuario = auth()->user();
+            $pacienteExistente = null;
+            $newUser = null;
+
+            if ($usuario && !$request->has('create_user')) {
+                $pacienteExistente = Paciente::where('user_id', $usuario->id)->first();
+            }
+
+            if ($pacienteExistente) {
+                // Actualizar perfil existente
+                $pacienteExistente->nombres = $request->input('nombres');
+                $pacienteExistente->apellidos = $request->input('apellidos');
+                $pacienteExistente->cedula = $cedulaCompleta;
+                $pacienteExistente->fecha_nacimiento = $request->input('fecha_nacimiento');
+                $pacienteExistente->sexo = $request->input('sexo');
+                $pacienteExistente->edad = $request->input('edad');
+                $pacienteExistente->ocupacion = $request->input('ocupacion');
+                $pacienteExistente->estado_civil = $request->input('estado_civil');
+                $pacienteExistente->ocupacion_actual = $request->input('ocupacion_actual');
+                $pacienteExistente->telefono = $request->input('telefono');
+                $pacienteExistente->direccion = $request->input('direccion');
+                $pacienteExistente->correo = $request->input('email');
+
+                $pacienteExistente->save();
+
+                $mensaje = 'Se actualizó su perfil correctamente';
+                $pacienteSaved = $pacienteExistente;
+            } else {
+                // Si es una creación desde el panel admin, crear usuario primero
+                if ($request->has('create_user') && $request->input('create_user')) {
+                    // Crear nuevo usuario
+                    $newUser = new User();
+                    $newUser->name = $request->input('nombres') . ' ' . $request->input('apellidos');
+                    $newUser->email = $request->input('email');
+                    $newUser->password = Hash::make($request->input('password'));
+                    $newUser->save();
+
+                    // Asignar rol de paciente
+                    $newUser->assignRole('paciente');
+                }
+
+                // Crear un nuevo paciente
+                $paciente = new Paciente();
+
+                $paciente->nombres = $request->input('nombres');
+                $paciente->apellidos = $request->input('apellidos');
+                $paciente->cedula = $cedulaCompleta;
+                $paciente->fecha_nacimiento = $request->input('fecha_nacimiento');
+                $paciente->sexo = $request->input('sexo');
+                $paciente->edad = $request->input('edad');
+                $paciente->ocupacion = $request->input('ocupacion');
+                $paciente->estado_civil = $request->input('estado_civil');
+                $paciente->ocupacion_actual = $request->input('ocupacion_actual');
+                $paciente->telefono = $request->input('telefono');
+                $paciente->direccion = $request->input('direccion');
+                $paciente->correo = $request->input('email');
+
+                // Si es un usuario autenticado, vinculamos el paciente
+                if ($usuario && !$request->has('create_user')) {
+                    $paciente->user_id = $usuario->id;
+                } elseif ($newUser) {
+                    $paciente->user_id = $newUser->id;
+                }
+
+                $paciente->save();
+                $pacienteSaved = $paciente;
+
+                $mensaje = 'Se registró al paciente correctamente';
+
+                // Información adicional si se creó un usuario
+                if ($newUser) {
+                    $mensaje .= ' y se creó una cuenta de acceso con el correo como nombre de usuario';
+                }
+            }
+
+            // Confirmar transacción
+            \DB::commit();
+
             return redirect()->route('admin.pacientes.index')
-                ->with('mensaje', 'Ocurrió un error inesperado. Por favor, intente nuevamente.')
+                ->with('mensaje', $mensaje)
+                ->with('icono', 'success');
+        }
+        catch (\Exception $e) {
+            // Revertir transacción en caso de error
+            \DB::rollBack();
+
+            \Log::error('Error al guardar paciente: ' . $e->getMessage());
+
+            // Si el error es de cédula duplicada
+            if ($e instanceof \Illuminate\Database\QueryException && $e->getCode() == 23000 && strpos($e->getMessage(), 'pacientes_cedula_unique') !== false) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('mensaje', 'La cédula ' . $cedulaCompleta . ' ya está registrada en el sistema. Por favor, verifique sus datos.')
+                    ->with('icono', 'error');
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->with('mensaje', 'Ocurrió un error al guardar la información: ' . $e->getMessage())
                 ->with('icono', 'error');
         }
     }
@@ -211,54 +325,109 @@ class PacienteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Buscar el paciente, si no se encuentra, redirige con un error.
-        $paciente = Paciente::findOrFail($id);
+        // Concatenar la nacionalidad con la cédula
+        $cedulaCompleta = $request->input('nacionalidad') . '-' . $request->input('cedula');
 
-        // Validación de datos
-        $request->validate([
-            'nombres' => 'required',
-            'apellidos' => 'required',
-            'telefono' => 'required',
-            'direccion' => 'required',
-            'fecha_nacimiento' => 'required|date',
-            'sexo' => 'required',
-            'edad' => 'required|integer',
-            'ocupacion' => 'required',
-            'ocupacion_actual' => 'required',
-            'password' => 'nullable|max:250|confirmed',
-        ]);
+        // Validación básica para los datos del paciente
+        $rules = [
+            'nombres' => 'nullable|string|max:255',
+            'apellidos' => 'nullable|string|max:255',
+            'nacionalidad' => 'required|in:V,E',
+            'cedula' => 'required|string|max:100',
+            'fecha_nacimiento' => 'nullable|date',
+            'sexo' => 'nullable|in:Masculino,Femenino',
+            'edad' => 'nullable|integer|min:0|max:150',
+            'ocupacion' => 'nullable|string|max:255',
+            'estado_civil' => 'nullable|in:Soltero(a),Casado(a),Divorciado(a),Viudo(a)',
+            'ocupacion_actual' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:15',
+            'direccion' => 'required|string|max:500',
+            'email' => 'required|email|max:250',
+        ];
 
-        // Crear la cédula completa con la nacionalidad
-        $nacionalidad = $request->input('nacionalidad'); // V o E
-        $cedula = $request->input('cedula'); // El número de cédula
-
-        $cedulaCompleta = $nacionalidad . '-' . $cedula;
-
-        // Asignar los valores al paciente
-        $paciente->nombres = $request->input('nombres');
-        $paciente->apellidos = $request->input('apellidos');
-        $paciente->cedula = $cedulaCompleta; // Actualizar la cédula completa
-        $paciente->fecha_nacimiento = $request->input('fecha_nacimiento');
-        $paciente->sexo = $request->input('sexo');
-        $paciente->edad = $request->input('edad');
-        $paciente->ocupacion = $request->input('ocupacion');
-        $paciente->estado_civil = $request->input('estado_civil');
-        $paciente->ocupacion_actual = $request->input('ocupacion_actual');
-        $paciente->telefono = $request->input('telefono');
-        $paciente->direccion = $request->input('direccion');
-
-        // Si se proporciona un nuevo password, se actualiza
-        if ($request->filled('password')) {
-            $paciente->password = bcrypt($request->input('password'));
+        // Validaciones adicionales para cambio de contraseña si está marcada la casilla
+        if ($request->has('change_password') && $request->input('change_password')) {
+            $rules['current_password'] = ['required', function ($attribute, $value, $fail) {
+                if (!Hash::check($value, Auth::user()->password)) {
+                    $fail('La contraseña actual es incorrecta.');
+                }
+            }];
+            $rules['password'] = ['required', 'confirmed', Password::min(8)->letters()->numbers()];
         }
 
-        // Guardar el paciente actualizado
-        $paciente->save();
+        $request->validate($rules);
 
-        // Redirigir con mensaje de éxito
-        return redirect()->route('admin.pacientes.index')
-            ->with('mensaje', 'Se actualizaron los datos del paciente correctamente')
-            ->with('icono', 'success');
+        // Buscar el paciente a actualizar
+        $paciente = Paciente::findOrFail($id);
+
+        // Verificar si la cédula ya existe para otro paciente (distinto al actual)
+        $cedulaExistente = Paciente::where('cedula', $cedulaCompleta)
+            ->where('id', '!=', $id)
+            ->first();
+        if ($cedulaExistente) {
+            return redirect()->back()
+                ->withInput()
+                ->with('mensaje', 'La cédula ' . $cedulaCompleta . ' ya está registrada para otro paciente. Por favor, verifique sus datos.')
+                ->with('icono', 'error');
+        }
+
+        try {
+            // Actualizar los campos del paciente
+            $paciente->nombres = $request->input('nombres');
+            $paciente->apellidos = $request->input('apellidos');
+            $paciente->cedula = $cedulaCompleta;
+            $paciente->fecha_nacimiento = $request->input('fecha_nacimiento');
+            $paciente->sexo = $request->input('sexo');
+            $paciente->edad = $request->input('edad');
+            $paciente->ocupacion = $request->input('ocupacion');
+            $paciente->estado_civil = $request->input('estado_civil');
+            $paciente->ocupacion_actual = $request->input('ocupacion_actual');
+            $paciente->telefono = $request->input('telefono');
+            $paciente->direccion = $request->input('direccion');
+            $paciente->correo = $request->input('email');
+
+            $paciente->save();
+
+            // Actualizar contraseña si se solicitó
+            if ($request->has('change_password') && $request->input('change_password')) {
+                // Obtener el usuario asociado al paciente
+                $user = User::find($paciente->user_id);
+
+                if ($user && $user->id === auth()->id()) {
+                    $user->password = Hash::make($request->input('password'));
+                    $user->save();
+
+                    $mensajePassword = ' y se ha actualizado su contraseña';
+                } else {
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('mensaje', 'No tiene permiso para cambiar la contraseña de este usuario.')
+                        ->with('icono', 'error');
+                }
+            } else {
+                $mensajePassword = '';
+            }
+
+            return redirect()->route('admin.pacientes.index')
+                ->with('mensaje', 'Se actualizó la información del paciente correctamente' . $mensajePassword)
+                ->with('icono', 'success');
+        }
+        catch (\Exception $e) {
+            \Log::error('Error al actualizar paciente: ' . $e->getMessage());
+
+            // Si el error es de cédula duplicada
+            if ($e instanceof \Illuminate\Database\QueryException && $e->getCode() == 23000 && strpos($e->getMessage(), 'pacientes_cedula_unique') !== false) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('mensaje', 'La cédula ' . $cedulaCompleta . ' ya está registrada en el sistema. Por favor, verifique sus datos.')
+                    ->with('icono', 'error');
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->with('mensaje', 'Ocurrió un error al actualizar la información. Verifique que los datos sean correctos.')
+                ->with('icono', 'error');
+        }
     }
 
 
@@ -272,9 +441,36 @@ class PacienteController extends Controller
      */
     public function destroy($id)
     {
-        Paciente::destroy($id);
-        return redirect()->route('admin.pacientes.index')
-            ->with('mensaje', 'Paciente eliminado correctamente')
-            ->with('icono', 'success');
+        try {
+            \DB::beginTransaction();
+
+            $paciente = Paciente::findOrFail($id);
+
+            // Si el paciente tiene un usuario asociado
+            if ($paciente->user_id) {
+                $usuario = User::find($paciente->user_id);
+                if ($usuario) {
+                    // Eliminar usuario asociado
+                    $usuario->delete();
+                }
+            }
+
+            // Eliminar paciente
+            $paciente->delete();
+
+            \DB::commit();
+
+            return redirect()->route('admin.pacientes.index')
+                ->with('mensaje', 'Paciente eliminado correctamente')
+                ->with('icono', 'success');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+
+            \Log::error('Error al eliminar paciente: ' . $e->getMessage());
+
+            return redirect()->route('admin.pacientes.index')
+                ->with('mensaje', 'Error al eliminar el paciente: ' . $e->getMessage())
+                ->with('icono', 'error');
+        }
     }
 }

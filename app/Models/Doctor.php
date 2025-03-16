@@ -37,4 +37,17 @@ class Doctor extends Model
     public function historial(){
     return $this->hasMany(Historial::class);
     }
+
+    public function mascotas()
+    {
+        return $this->belongsToMany(Mascota::class, 'visitas_mascota', 'doctor_id', 'mascota_id')
+            ->withPivot('fecha_visita', 'specialty_id')
+            ->withTimestamps();
+    }
+
+    public function visitasMascotas()
+    {
+        return $this->hasMany(VisitaMascota::class);
+    }
+
 }

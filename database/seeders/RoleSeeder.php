@@ -125,6 +125,42 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.historial.confirmDelete'])->syncRoles([$admin,$doctor]);
         Permission::create(['name' => 'admin.historial.destroy'])->syncRoles([$admin,$doctor]);
 
+        // Permisos para el perfil de usuario
+        Permission::create(['name' => 'perfil.index'])->syncRoles([$paciente, $usuario]);
+        Permission::create(['name' => 'perfil.editar'])->syncRoles([$paciente, $usuario]);
+        Permission::create(['name' => 'perfil.actualizar'])->syncRoles([$paciente, $usuario]);
+        Permission::create(['name' => 'perfil.cambiar-password'])->syncRoles([$paciente, $usuario]);
+        Permission::create(['name' => 'perfil.actualizar-password'])->syncRoles([$paciente, $usuario]);
+        Permission::create(['name' => 'ver.perfil.paciente'])->syncRoles([$paciente, $usuario]);
 
+        // Rutas para mascotas
+        Permission::create(['name' => 'admin.mascotas.index'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.mascotas.create'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.mascotas.store'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.mascotas.show'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.mascotas.edit'])->syncRoles([$admin, $doctor]);
+        Permission::create(['name' => 'admin.mascotas.update'])->syncRoles([$admin, $doctor]);
+        Permission::create(['name' => 'admin.mascotas.confirmDelete'])->syncRoles([$admin]);
+        Permission::create(['name' => 'admin.mascotas.destroy'])->syncRoles([$admin]);
+        Permission::create(['name' => 'admin.mascotas.getByPaciente'])->syncRoles([$admin, $doctor, $enfermera]);
+
+        // Rutas para vacunas
+        Permission::create(['name' => 'admin.vacunas.store'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.vacunas.update'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.vacunas.destroy'])->syncRoles([$admin, $doctor]);
+
+        // Rutas para desparasitaciones
+        Permission::create(['name' => 'admin.desparasitaciones.store'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.desparasitaciones.update'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.desparasitaciones.destroy'])->syncRoles([$admin, $doctor]);
+
+        // Rutas para visitas
+        Permission::create(['name' => 'admin.visitas.store'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.visitas.show'])->syncRoles([$admin, $doctor, $enfermera]);
+        Permission::create(['name' => 'admin.visitas.update'])->syncRoles([$admin, $doctor]);
+        Permission::create(['name' => 'admin.visitas.destroy'])->syncRoles([$admin]);
+
+        // Rutas para el historial por mascota
+        Permission::create(['name' => 'admin.historial.porMascota'])->syncRoles([$admin, $doctor]);
     }
 }

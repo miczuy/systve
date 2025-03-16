@@ -1,7 +1,11 @@
 <?php
 
-
+use App\Http\Controllers\Admin\MascotaController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DesparasitacionMascotaController;
+use App\Http\Controllers\HistorialController;
+use App\Http\Controllers\VacunaMascotaController;
+use App\Http\Controllers\VisitaMascotaController;
 use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -81,6 +85,16 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/pacientes/{id}', [App\Http\Controllers\PacienteController::class, 'destroy'])->name('admin.pacientes.destroy')->can('admin.pacientes.destroy');
 });
 
+// Rutas para perfil de usuario
+Route::middleware(['auth'])->group(function () {
+    Route::get('/perfil', [App\Http\Controllers\PerfilController::class, 'index'])->name('perfil.index')->middleware('can:perfil.index');
+    Route::get('/perfil/editar', [App\Http\Controllers\PerfilController::class, 'editar'])->name('perfil.editar')->middleware('can:perfil.editar');
+    Route::post('/perfil/actualizar', [App\Http\Controllers\PerfilController::class, 'actualizar'])->name('perfil.actualizar')->middleware('can:perfil.actualizar');
+    Route::get('/perfil/cambiar-password', [App\Http\Controllers\PerfilController::class, 'cambiarPassword'])->name('perfil.cambiar-password')->middleware('can:perfil.cambiar-password');
+    Route::post('/perfil/actualizar-password', [App\Http\Controllers\PerfilController::class, 'actualizarPassword'])->name('perfil.actualizar-password')->middleware('can:perfil.actualizar-password');
+});
+
+
 // Rutas de Consultorios
 Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/admin/consultorios', [App\Http\Controllers\ConsultorioController::class, 'index'])->name('admin.consultorios.index')->can('admin.consultorios.index');
@@ -127,13 +141,12 @@ Route::middleware(['auth'])->group(function () {
 
 // Rutas Usuario
 Route::middleware(['auth'])->group(function () {
-Route::get('/consultorios/{id}', [WebController::class, 'cargar_datos_consultorios'])->name('cargar_datos_consultorios')->can('cargar_datos_consultorios');
-Route::get('cargar_reserva_doctores/{id}', [WebController::class, 'cargar_reserva_doctores'])->name('cargar_reserva_doctores')->can('cargar_reserva_doctores');
-Route::get('admin/ver_reservas/{id}', [AdminController::class, 'ver_reservas'])->name('ver_reservas')->can('ver_reservas');
-Route::post('admin/eventos/create', [App\Http\Controllers\EventController::class, 'store'])->name('admin.eventos.create')->can('admin.eventos.create');
-Route::delete('admin/eventos/destroy/{id}', [App\Http\Controllers\EventController::class, 'destroy'])->name('admin.eventos.destroy')->can('admin.eventos.destroy');
+    Route::get('/consultorios/{id}', [WebController::class, 'cargar_datos_consultorios'])->name('cargar_datos_consultorios')->can('cargar_datos_consultorios');
+    Route::get('cargar_reserva_doctores/{id}', [WebController::class, 'cargar_reserva_doctores'])->name('cargar_reserva_doctores')->can('cargar_reserva_doctores');
+    Route::get('admin/ver_reservas/{id}', [AdminController::class, 'ver_reservas'])->name('ver_reservas')->can('ver_reservas');
+    Route::post('admin/eventos/create', [App\Http\Controllers\EventController::class, 'store'])->name('admin.eventos.create')->can('admin.eventos.create');
+    Route::delete('admin/eventos/destroy/{id}', [App\Http\Controllers\EventController::class, 'destroy'])->name('admin.eventos.destroy')->can('admin.eventos.destroy');
 });
-
 
 
 // Rutas para las reservas
@@ -151,7 +164,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Rutas para las el historial
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/historial', [App\Http\Controllers\HistorialController::class, 'index'])->name('admin.historial.index')->can('admin.historial.index');
     Route::get('/admin/historial/create', [App\Http\Controllers\HistorialController::class, 'create'])->name('admin.historial.create')->can('admin.historial.create');
@@ -165,4 +177,43 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+// Rutas para mascotas
+Route::middleware(['auth'])->group(function () {
+    // CRUD de mascotas
+    Route::get('/admin/mascotas', [App\Http\Controllers\MascotaController::class, 'index'])->name('admin.mascotas.index')->can('admin.mascotas.index');
+    Route::get('/admin/mascotas/create', [App\Http\Controllers\MascotaController::class, 'create'])->name('admin.mascotas.create')->can('admin.mascotas.create');
+    Route::post('/admin/mascotas', [App\Http\Controllers\MascotaController::class, 'store'])->name('admin.mascotas.store')->can('admin.mascotas.store');
+    Route::get('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'show'])->name('admin.mascotas.show')->can('admin.mascotas.show');
+    Route::get('/admin/mascotas/{mascota}/edit', [App\Http\Controllers\MascotaController::class, 'edit'])->name('admin.mascotas.edit')->can('admin.mascotas.edit');
+    Route::put('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'update'])->name('admin.mascotas.update')->can('admin.mascotas.update');
+    Route::get('/admin/mascotas/{mascota}/confirm-delete', [App\Http\Controllers\MascotaController::class, 'confirmDelete'])->name('admin.mascotas.confirmDelete')->can('admin.mascotas.confirmDelete');
+    Route::delete('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'destroy'])->name('admin.mascotas.destroy')->can('admin.mascotas.destroy');
 
+    // API para obtener mascotas por paciente
+    Route::get('/admin/api/pacientes/{paciente}/mascotas', [MascotaController::class, 'getByPaciente'])->name('admin.mascotas.getByPaciente')->can('admin.mascotas.getByPaciente');
+
+    // Rutas para vacunas
+    Route::post('/admin/vacunas', [VacunaMascotaController::class, 'store'])->name('admin.vacunas.store')->can('admin.vacunas.store');
+    Route::put('/admin/vacunas/{vacuna}', [VacunaMascotaController::class, 'update'])->name('admin.vacunas.update')->can('admin.vacunas.update');
+    Route::delete('/admin/vacunas/{vacuna}', [VacunaMascotaController::class, 'destroy'])->name('admin.vacunas.destroy')->can('admin.vacunas.destroy');
+
+    // Rutas para desparasitaciones
+    Route::post('/admin/desparasitaciones', [DesparasitacionMascotaController::class, 'store'])->name('admin.desparasitaciones.store')->can('admin.desparasitaciones.store');
+    Route::put('/admin/desparasitaciones/{desparasitacion}', [DesparasitacionMascotaController::class, 'update'])->name('admin.desparasitaciones.update')->can('admin.desparasitaciones.update');
+    Route::delete('/admin/desparasitaciones/{desparasitacion}', [DesparasitacionMascotaController::class, 'destroy'])->name('admin.desparasitaciones.destroy')->can('admin.desparasitaciones.destroy');
+
+    // Rutas para visitas
+    Route::post('/admin/visitas', [VisitaMascotaController::class, 'store'])->name('admin.visitas.store')->can('admin.visitas.store');
+    Route::get('/admin/visitas/{visita}', [VisitaMascotaController::class, 'show'])->name('admin.visitas.show')->can('admin.visitas.show');
+    Route::put('/admin/visitas/{visita}', [VisitaMascotaController::class, 'update'])->name('admin.visitas.update')->can('admin.visitas.update');
+    Route::delete('/admin/visitas/{visita}', [VisitaMascotaController::class, 'destroy'])->name('admin.visitas.destroy')->can('admin.visitas.destroy');
+
+    // Rutas adicionales para historial vinculadas a mascotas
+    Route::get('/admin/historial/mascota/{mascota}', [HistorialController::class, 'porMascota'])->name('admin.historial.porMascota')->can('admin.historial.show');
+});
+
+// Rutas para pacientes (acceso a sus propias mascotas)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/paciente/mascotas', [App\Http\Controllers\Paciente\MascotaController::class, 'index'])->name('paciente.mascotas.index')->can('ver.perfil.paciente');
+    Route::get('/paciente/mascotas/{mascota}', [App\Http\Controllers\Paciente\MascotaController::class, 'show'])->name('paciente.mascotas.show')->can('ver.perfil.paciente');
+});
