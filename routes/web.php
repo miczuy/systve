@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\MascotaController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DesparasitacionMascotaController;
-use App\Http\Controllers\HistorialController;
+use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\VacunaMascotaController;
 use App\Http\Controllers\VisitaMascotaController;
+use App\Http\Controllers\PacienteMascotaController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -177,20 +179,20 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-// Rutas para mascotas
+// Rutas para mascotas (administración)
 Route::middleware(['auth'])->group(function () {
     // CRUD de mascotas
-    Route::get('/admin/mascotas', [App\Http\Controllers\MascotaController::class, 'index'])->name('admin.mascotas.index')->can('admin.mascotas.index');
-    Route::get('/admin/mascotas/create', [App\Http\Controllers\MascotaController::class, 'create'])->name('admin.mascotas.create')->can('admin.mascotas.create');
-    Route::post('/admin/mascotas', [App\Http\Controllers\MascotaController::class, 'store'])->name('admin.mascotas.store')->can('admin.mascotas.store');
-    Route::get('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'show'])->name('admin.mascotas.show')->can('admin.mascotas.show');
-    Route::get('/admin/mascotas/{mascota}/edit', [App\Http\Controllers\MascotaController::class, 'edit'])->name('admin.mascotas.edit')->can('admin.mascotas.edit');
-    Route::put('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'update'])->name('admin.mascotas.update')->can('admin.mascotas.update');
-    Route::get('/admin/mascotas/{mascota}/confirm-delete', [App\Http\Controllers\MascotaController::class, 'confirmDelete'])->name('admin.mascotas.confirmDelete')->can('admin.mascotas.confirmDelete');
-    Route::delete('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'destroy'])->name('admin.mascotas.destroy')->can('admin.mascotas.destroy');
+    Route::get('/admin/mascotas', [MascotaController::class, 'index'])->name('admin.mascotas.index')->can('admin.mascotas.index');
+    Route::get('/admin/mascotas/create', [MascotaController::class, 'create'])->name('admin.mascotas.create')->can('admin.mascotas.create');
+    Route::post('/admin/mascotas', [MascotaController::class, 'store'])->name('admin.mascotas.store')->can('admin.mascotas.store');
+    Route::get('/admin/mascotas/{mascota}', [MascotaController::class, 'show'])->name('admin.mascotas.show')->can('admin.mascotas.show');
+    Route::get('/admin/mascotas/{mascota}/edit', [MascotaController::class, 'edit'])->name('admin.mascotas.edit')->can('admin.mascotas.edit');
+    Route::put('/admin/mascotas/{mascota}', [MascotaController::class, 'update'])->name('admin.mascotas.update')->can('admin.mascotas.update');
+    Route::get('/admin/mascotas/{mascota}/confirm-delete', [MascotaController::class, 'confirmDelete'])->name('admin.mascotas.confirmDelete')->can('admin.mascotas.confirmDelete');
+    Route::delete('/admin/mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('admin.mascotas.destroy')->can('admin.mascotas.destroy');
 
     // API para obtener mascotas por paciente
-    Route::get('/admin/api/pacientes/{paciente}/mascotas', [MascotaController::class, 'getByPaciente'])->name('admin.mascotas.getByPaciente')->can('admin.mascotas.getByPaciente');
+    Route::get('/admin/api/pacientes/{pacienteId}/mascotas', [MascotaController::class, 'getByPaciente'])->name('admin.mascotas.getByPaciente')->can('admin.mascotas.getByPaciente');
 
     // Rutas para vacunas
     Route::post('/admin/vacunas', [VacunaMascotaController::class, 'store'])->name('admin.vacunas.store')->can('admin.vacunas.store');
@@ -214,6 +216,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Rutas para pacientes (acceso a sus propias mascotas)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/paciente/mascotas', [App\Http\Controllers\Paciente\MascotaController::class, 'index'])->name('paciente.mascotas.index')->can('ver.perfil.paciente');
-    Route::get('/paciente/mascotas/{mascota}', [App\Http\Controllers\Paciente\MascotaController::class, 'show'])->name('paciente.mascotas.show')->can('ver.perfil.paciente');
+    Route::get('/paciente/mascotas', [PacienteMascotaController::class, 'index'])->name('paciente.mascotas.index')->can('ver.perfil.paciente');
+    Route::get('/paciente/mascotas/{mascota}', [PacienteMascotaController::class, 'show'])->name('paciente.mascotas.show')->can('ver.perfil.paciente');
 });

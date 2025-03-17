@@ -171,6 +171,18 @@
                     </li>
                 @endcan
 
+                @if(auth()->user()->hasRole('usuario'))
+                    <li class="nav-link">
+                        <a href="{{ route('paciente.mascotas.index') }}">
+                            <div class="icon">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2138/2138440.png" alt="Mascotas">
+                            </div>
+                            <span class="text nav-text">Mis Mascotas</span>
+                        </a>
+                    </li>
+                @endif
+
+
             </ul>
 
         </div>

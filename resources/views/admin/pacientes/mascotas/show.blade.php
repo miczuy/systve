@@ -3,21 +3,14 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-12">
+            <div class="col-md-10">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Ficha de Mascota: {{ $mascota->nombre }}</h5>
-                            <div>
-                                @can('admin.mascotas.edit')
-                                    <a href="{{ route('admin.mascotas.edit', $mascota) }}" class="btn btn-light btn-sm">
-                                        <i class="fas fa-edit"></i> Editar y Gestionar Registros
-                                    </a>
-                                @endcan
-                                <a href="{{ route('admin.mascotas.index') }}" class="btn btn-light btn-sm">
-                                    <i class="fas fa-arrow-left"></i> Volver
-                                </a>
-                            </div>
+                            <h5 class="mb-0">Información de {{ $mascota->nombre }}</h5>
+                            <a href="{{ route('paciente.mascotas.index') }}" class="btn btn-sm btn-light">
+                                <i class="fas fa-arrow-left"></i> Volver
+                            </a>
                         </div>
                     </div>
 
@@ -42,11 +35,7 @@
                                             <table class="table table-borderless">
                                                 <tbody>
                                                 <tr>
-                                                    <th style="width: 40%;">Dueño:</th>
-                                                    <td>{{ $mascota->paciente->nombres ?? '' }} {{ $mascota->paciente->apellidos ?? '' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Especie:</th>
+                                                    <th style="width: 40%;">Especie:</th>
                                                     <td>{{ $mascota->especie }}</td>
                                                 </tr>
                                                 <tr>
@@ -83,18 +72,6 @@
                                                 <tr>
                                                     <th>Esterilizado:</th>
                                                     <td>{{ $mascota->esterilizado ? 'Sí' : 'No' }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <th>Estado:</th>
-                                                    <td>
-                                                        @if($mascota->estado == 'Activo')
-                                                            <span class="badge bg-success">Activo</span>
-                                                        @elseif($mascota->estado == 'Inactivo')
-                                                            <span class="badge bg-warning text-dark">Inactivo</span>
-                                                        @else
-                                                            <span class="badge bg-danger">Fallecido</span>
-                                                        @endif
-                                                    </td>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -134,10 +111,6 @@
                             </div>
                         </div>
 
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i> Para agregar o editar vacunas, desparasitaciones o visitas, utilice el botón "Editar y Gestionar Registros" en la parte superior.
-                        </div>
-
                         <!-- Historial de vacunas -->
                         <div class="row">
                             <div class="col-md-6 mb-4">
@@ -154,7 +127,6 @@
                                                         <th>Vacuna</th>
                                                         <th>Fecha</th>
                                                         <th>Próxima</th>
-                                                        <th>Notas</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -174,7 +146,6 @@
                                                                     N/A
                                                                 @endif
                                                             </td>
-                                                            <td>{{ Str::limit($vacuna->notas, 30) }}</td>
                                                         </tr>
                                                     @endforeach
                                                     </tbody>
@@ -204,7 +175,6 @@
                                                         <th>Medicamento</th>
                                                         <th>Fecha</th>
                                                         <th>Próxima</th>
-                                                        <th>Peso / Dosis</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -224,7 +194,6 @@
                                                                     N/A
                                                                 @endif
                                                             </td>
-                                                            <td>{{ $desparasitacion->peso_aplicacion }} kg / {{ $desparasitacion->dosis }}</td>
                                                         </tr>
                                                     @endforeach
                                                     </tbody>
@@ -250,19 +219,14 @@
                                     <div class="card-body">
                                         @if($mascota->visitas->count() > 0)
                                             <div class="accordion" id="visitasAccordion">
-                                                @foreach($mascota->visitas->sortByDesc('fecha_visita') as $index => $visita)
+                                                @foreach($mascota->visitas as $index => $visita)
                                                     <div class="accordion-item">
                                                         <h2 class="accordion-header" id="heading{{ $visita->id }}">
                                                             <button class="accordion-button {{ $index > 0 ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $visita->id }}" aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $visita->id }}">
                                                                 <div class="d-flex justify-content-between align-items-center w-100">
                                                                     <div>
                                                                         <strong>{{ $visita->fecha_visita->format('d/m/Y') }}</strong> -
-                                                                        {{ $visita->motivo_consulta }}
-                                                                    </div>
-                                                                    <div class="ms-3">
-                                                                    <span class="badge bg-{{ $visita->estado === 'Completada' ? 'success' : ($visita->estado === 'Programada' ? 'info' : 'danger') }}">
-                                                                        {{ $visita->estado }}
-                                                                    </span>
+                                                                        {{ $visita->motivo }}
                                                                     </div>
                                                                 </div>
                                                             </button>
@@ -274,12 +238,8 @@
                                                                         <h6 class="fw-bold">Detalles de la Visita:</h6>
                                                                         <ul class="list-group mb-3">
                                                                             <li class="list-group-item d-flex justify-content-between">
-                                                                                <span>Fecha y hora:</span>
-                                                                                <span>{{ $visita->fecha_visita->format('d/m/Y') }} {{ $visita->hora_visita }}</span>
-                                                                            </li>
-                                                                            <li class="list-group-item d-flex justify-content-between">
-                                                                                <span>Doctor:</span>
-                                                                                <span>{{ $visita->doctor->nombre ?? 'No asignado' }}</span>
+                                                                                <span>Fecha:</span>
+                                                                                <span>{{ $visita->fecha_visita->format('d/m/Y') }}</span>
                                                                             </li>
                                                                             <li class="list-group-item d-flex justify-content-between">
                                                                                 <span>Peso:</span>
@@ -293,13 +253,13 @@
                                                                     </div>
                                                                     <div class="col-md-6">
                                                                         <div class="mb-3">
-                                                                            <h6 class="fw-bold">Motivo de la Consulta:</h6>
-                                                                            <p>{{ $visita->motivo_consulta }}</p>
+                                                                            <h6 class="fw-bold">Motivo de la Visita:</h6>
+                                                                            <p>{{ $visita->motivo }}</p>
                                                                         </div>
 
                                                                         <div class="mb-3">
-                                                                            <h6 class="fw-bold">Síntomas:</h6>
-                                                                            <p>{{ $visita->sintomas ?? 'No registrados' }}</p>
+                                                                            <h6 class="fw-bold">Examen Físico:</h6>
+                                                                            <p>{{ $visita->examen_fisico ?? 'No registrado' }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -307,7 +267,7 @@
                                                                 <div class="row">
                                                                     <div class="col-md-12">
                                                                         <h6 class="fw-bold">Diagnóstico:</h6>
-                                                                        <p>{{ $visita->diagnostico ?? 'Pendiente' }}</p>
+                                                                        <p>{{ $visita->diagnostico }}</p>
                                                                     </div>
                                                                 </div>
 
@@ -324,15 +284,6 @@
                                                                         <p>{{ $visita->observaciones ?? 'Sin observaciones' }}</p>
                                                                     </div>
                                                                 </div>
-
-                                                                @if($visita->fecha_seguimiento)
-                                                                    <div class="row">
-                                                                        <div class="col-md-12">
-                                                                            <h6 class="fw-bold">Fecha de Seguimiento:</h6>
-                                                                            <p>{{ $visita->fecha_seguimiento->format('d/m/Y') }}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>

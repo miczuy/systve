@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class MascotaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $query = Mascota::query()->with('paciente');
@@ -21,24 +18,26 @@ class MascotaController extends Controller
         // Filtros
         if ($request->has('buscar')) {
             $search = $request->buscar;
-            $query->where('nombre', 'LIKE', "%{$search}%")
-                ->orWhere('especie', 'LIKE', "%{$search}%")
-                ->orWhere('raza', 'LIKE', "%{$search}%")
-                ->orWhereHas('paciente', function($q) use ($search) {
-                    $q->where('nombres', 'LIKE', "%{$search}%")
-                        ->orWhere('apellidos', 'LIKE', "%{$search}%");
-                });
+            $query->where(function($q) use ($search) {
+                $q->where('nombre', 'LIKE', "%{$search}%")
+                    ->orWhere('especie', 'LIKE', "%{$search}%")
+                    ->orWhere('raza', 'LIKE', "%{$search}%")
+                    ->orWhereHas('paciente', function($q) use ($search) {
+                        $q->where('nombres', 'LIKE', "%{$search}%")
+                            ->orWhere('apellidos', 'LIKE', "%{$search}%");
+                    });
+            });
         }
 
-        if ($request->has('especie')) {
+        if ($request->filled('especie')) {
             $query->where('especie', $request->especie);
         }
 
-        if ($request->has('estado')) {
+        if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
         }
 
-        if ($request->has('paciente_id')) {
+        if ($request->filled('paciente_id')) {
             $query->where('paciente_id', $request->paciente_id);
         }
 
@@ -47,18 +46,12 @@ class MascotaController extends Controller
         return view('admin.mascotas.index', compact('mascotas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $pacientes = Paciente::orderBy('apellidos')->get();
         return view('admin.mascotas.create', compact('pacientes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -83,28 +76,31 @@ class MascotaController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('error', 'Por favor, corrije los errores en el formulario.');
         }
 
-        $mascotaData = $request->except('foto');
+        try {
+            $mascotaData = $request->except('foto');
 
-        // Manejar la subida de la foto si existe
-        if ($request->hasFile('foto')) {
-            $foto = $request->file('foto');
-            $nombreFoto = time() . '_' . $foto->getClientOriginalName();
-            $rutaFoto = $foto->storeAs('mascotas', $nombreFoto, 'public');
-            $mascotaData['foto'] = $rutaFoto;
+            if ($request->hasFile('foto')) {
+                $foto = $request->file('foto');
+                $nombreFoto = time() . '_' . $foto->getClientOriginalName();
+                $rutaFoto = $foto->storeAs('mascotas', $nombreFoto, 'public');
+                $mascotaData['foto'] = $rutaFoto;
+            }
+
+            $mascota = Mascota::create($mascotaData);
+
+            return redirect()->route('admin.mascotas.show', $mascota)
+                ->with('success', '¡La mascota ha sido registrada exitosamente!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al registrar la mascota. Por favor, inténtalo de nuevo.');
         }
-
-        $mascota = Mascota::create($mascotaData);
-
-        return redirect()->route('admin.mascotas.show', $mascota)
-            ->with('success', 'Mascota registrada correctamente');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Mascota $mascota)
     {
         $mascota->load(['paciente', 'vacunas', 'desparasitaciones', 'visitas' => function($query) {
@@ -114,18 +110,17 @@ class MascotaController extends Controller
         return view('admin.mascotas.show', compact('mascota'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Mascota $mascota)
     {
+        // Cargar todas las relaciones para poder mostrarlas en la vista de edición
+        $mascota->load(['vacunas', 'desparasitaciones', 'visitas' => function($query) {
+            $query->orderBy('fecha_visita', 'desc');
+        }]);
+
         $pacientes = Paciente::orderBy('apellidos')->get();
         return view('admin.mascotas.edit', compact('mascota', 'pacientes'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Mascota $mascota)
     {
         $validator = Validator::make($request->all(), [
@@ -150,69 +145,78 @@ class MascotaController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('error', 'Por favor, corrije los errores en el formulario.');
         }
 
-        $mascotaData = $request->except('foto');
+        try {
+            $mascotaData = $request->except('foto');
 
-        // Manejar la subida de la foto si existe
-        if ($request->hasFile('foto')) {
-            // Eliminar foto anterior si existe
+            if ($request->hasFile('foto')) {
+                if ($mascota->foto) {
+                    Storage::disk('public')->delete($mascota->foto);
+                }
+
+                $foto = $request->file('foto');
+                $nombreFoto = time() . '_' . $foto->getClientOriginalName();
+                $rutaFoto = $foto->storeAs('mascotas', $nombreFoto, 'public');
+                $mascotaData['foto'] = $rutaFoto;
+            }
+
+            $mascota->update($mascotaData);
+
+            return redirect()->route('admin.mascotas.show', $mascota)
+                ->with('success', '¡La mascota ha sido actualizada exitosamente!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Ocurrió un error al actualizar la mascota. Por favor, inténtalo de nuevo.');
+        }
+    }
+
+    public function destroy(Mascota $mascota)
+    {
+        try {
+            if ($mascota->visitas()->count() > 0) {
+                return redirect()->back()
+                    ->with('mensaje', 'No se puede eliminar la mascota porque tiene historial clínico asociado.')
+                    ->with('icono', 'error');
+            }
+
+            $nombreMascota = $mascota->nombre;
+
             if ($mascota->foto) {
                 Storage::disk('public')->delete($mascota->foto);
             }
 
-            $foto = $request->file('foto');
-            $nombreFoto = time() . '_' . $foto->getClientOriginalName();
-            $rutaFoto = $foto->storeAs('mascotas', $nombreFoto, 'public');
-            $mascotaData['foto'] = $rutaFoto;
-        }
+            $mascota->delete();
 
-        $mascota->update($mascotaData);
-
-        return redirect()->route('admin.mascotas.show', $mascota)
-            ->with('success', 'Mascota actualizada correctamente');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Mascota $mascota)
-    {
-        // Verificar si tiene visitas antes de eliminar
-        if ($mascota->visitas()->count() > 0) {
+            return redirect()->route('admin.mascotas.index')
+                ->with('mensaje', "La mascota {$nombreMascota} ha sido eliminada exitosamente.")
+                ->with('icono', 'success');
+        } catch (\Exception $e) {
             return redirect()->back()
-                ->with('error', 'No se puede eliminar la mascota porque tiene historial clínico asociado.');
+                ->with('mensaje', 'Ocurrió un error al intentar eliminar la mascota. Por favor, inténtalo de nuevo.')
+                ->with('icono', 'error');
         }
-
-        // Eliminar foto si existe
-        if ($mascota->foto) {
-            Storage::disk('public')->delete($mascota->foto);
-        }
-
-        $mascota->delete();
-
-        return redirect()->route('admin.mascotas.index')
-            ->with('success', 'Mascota eliminada correctamente');
     }
 
-    /**
-     * Confirm delete
-     */
-    public function confirmDelete(Mascota $mascota)
-    {
-        return view('admin.mascotas.delete', compact('mascota'));
-    }
-
-    /**
-     * Obtener mascotas por paciente (para selectores dinámicos)
-     */
     public function getByPaciente($pacienteId)
     {
-        $mascotas = Mascota::where('paciente_id', $pacienteId)
-            ->where('estado', 'Activo')
-            ->get(['id', 'nombre', 'especie', 'raza']);
+        try {
+            $mascotas = Mascota::where('paciente_id', $pacienteId)
+                ->where('estado', 'Activo')
+                ->get(['id', 'nombre', 'especie', 'raza']);
 
-        return response()->json($mascotas);
+            return response()->json([
+                'success' => true,
+                'data' => $mascotas
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener las mascotas'
+            ], 500);
+        }
     }
 }
