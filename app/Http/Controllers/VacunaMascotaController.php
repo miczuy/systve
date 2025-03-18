@@ -26,13 +26,16 @@ class VacunaMascotaController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario')
+                ->with('icono', 'error');
         }
 
         VacunaMascota::create($request->all());
 
         return redirect()->back()
-            ->with('success', 'Vacuna registrada correctamente');
+            ->with('mensaje', 'Vacuna registrada correctamente')
+            ->with('icono', 'success');
     }
 
     /**
@@ -52,13 +55,16 @@ class VacunaMascotaController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario')
+                ->with('icono', 'error');
         }
 
         $vacuna->update($request->all());
 
         return redirect()->back()
-            ->with('success', 'Vacuna actualizada correctamente');
+            ->with('mensaje', 'Vacuna actualizada correctamente')
+            ->with('icono', 'success');
     }
 
     /**
@@ -69,6 +75,7 @@ class VacunaMascotaController extends Controller
         $vacuna->delete();
 
         return redirect()->back()
-            ->with('success', 'Vacuna eliminada correctamente');
+            ->with('mensaje', 'Vacuna eliminada correctamente')
+            ->with('icono', 'success');
     }
 }

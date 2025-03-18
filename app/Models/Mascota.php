@@ -15,7 +15,7 @@ class Mascota extends Model
     protected $fillable = [
         'paciente_id', 'nombre', 'especie', 'raza', 'color', 'sexo',
         'fecha_nacimiento', 'peso', 'caracteristicas_especiales',
-        'esterilizado', 'microchip', 'alergias', 'condiciones_medicas',
+        'esterilizado', 'alergias', 'condiciones_medicas',
         'medicacion_actual', 'foto', 'estado'
     ];
 

@@ -62,4 +62,10 @@ class Event extends Model
     {
         return $this->belongsToMany(Specialty::class);
     }
+    public function mascota()
+    {
+        return $this->belongsTo(\App\Models\Mascota::class);
+    }
+
+
 }

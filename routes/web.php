@@ -210,12 +210,23 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/visitas/{visita}', [VisitaMascotaController::class, 'update'])->name('admin.visitas.update')->can('admin.visitas.update');
     Route::delete('/admin/visitas/{visita}', [VisitaMascotaController::class, 'destroy'])->name('admin.visitas.destroy')->can('admin.visitas.destroy');
 
-    // Rutas adicionales para historial vinculadas a mascotas
-    Route::get('/admin/historial/mascota/{mascota}', [HistorialController::class, 'porMascota'])->name('admin.historial.porMascota')->can('admin.historial.show');
-});
+// Rutas para el historial médico
+    Route::get('historial/mascota/{mascota}', [HistorialController::class, 'porMascota'])->name('admin.historial.porMascota');
+    Route::get('historial/{historial}', [HistorialController::class, 'show'])->name('admin.historial.show');
 
 // Rutas para pacientes (acceso a sus propias mascotas)
 Route::middleware(['auth'])->group(function () {
     Route::get('/paciente/mascotas', [PacienteMascotaController::class, 'index'])->name('paciente.mascotas.index')->can('ver.perfil.paciente');
     Route::get('/paciente/mascotas/{mascota}', [PacienteMascotaController::class, 'show'])->name('paciente.mascotas.show')->can('ver.perfil.paciente');
+});
+
+Route::get('/doctor/{doctor}/especialidades', function(App\Models\Doctor $doctor) {
+    return response()->json([
+        'especialidades' => $doctor->specialties
+    ]);
+});
+
+Route::get('/specialty/{specialty}', function (App\Models\Specialty $specialty) {
+    return response()->json(['specialty' => $specialty]);
+});
 });

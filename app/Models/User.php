@@ -60,9 +60,9 @@ class User extends Authenticatable
         });
     }
 
-    public function pacientes()
+    public function paciente()
     {
-        return $this->hasMany(Paciente::class);
+        return $this->hasOne(Paciente::class);
     }
 
 

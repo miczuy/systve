@@ -131,10 +131,21 @@
                                     $numeroCedula = '';
 
                                     if(isset($paciente) && $paciente->cedula) {
-                                        $partes = explode('-', $paciente->cedula);
-                                        if(count($partes) > 1) {
-                                            $nacionalidad = $partes[0];
-                                            $numeroCedula = $partes[1];
+                                        // Verificar si es un valor temporal
+                                        if(strpos($paciente->cedula, 'NE-') === 0) {
+                                            // Si es temporal, dejamos los valores vacíos
+                                            $nacionalidad = '';
+                                            $numeroCedula = '';
+                                        } else {
+                                            // Si es una cédula real, procesamos normalmente
+                                            $partes = explode('-', $paciente->cedula);
+                                            if(count($partes) > 1) {
+                                                $nacionalidad = $partes[0];
+                                                $numeroCedula = $partes[1];
+                                            } else {
+                                                // Si no tiene el formato esperado, asignamos todo el valor a numeroCedula
+                                                $numeroCedula = $paciente->cedula;
+                                            }
                                         }
                                     }
                                 @endphp

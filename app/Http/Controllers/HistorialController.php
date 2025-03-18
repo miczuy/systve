@@ -19,11 +19,6 @@ class HistorialController extends Controller
     {
         $query = Historial::with('paciente', 'doctor', 'mascota');
 
-        // Filtrar por tipo_paciente
-        if ($request->has('tipo')) {
-            $query->where('tipo_paciente', $request->tipo);
-        }
-
         // Filtrar por paciente
         if ($request->has('paciente_id')) {
             $query->where('paciente_id', $request->paciente_id);
@@ -72,32 +67,29 @@ class HistorialController extends Controller
             'detalle' => 'required|string',
             'fecha_visita' => 'required|date',
             'doctor_id' => 'required|exists:doctors,id',
-            'tipo_paciente' => 'required|in:Humano,Mascota',
-            'paciente_id' => 'required_if:tipo_paciente,Humano|exists:pacientes,id',
-            'mascota_id' => 'required_if:tipo_paciente,Mascota|exists:mascotas,id',
+            'mascota_id' => 'required|exists:mascotas,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario.')
+                ->with('icono', 'error');
         }
 
         $data = $request->all();
 
-        // Si es tipo mascota, obtenemos el paciente_id desde la mascota
-        if ($request->tipo_paciente === 'Mascota') {
-            $mascota = Mascota::findOrFail($request->mascota_id);
-            $data['paciente_id'] = $mascota->paciente_id;
-        } else {
-            // Si es humano, mascota_id es nulo
-            $data['mascota_id'] = null;
-        }
+        // Obtenemos el paciente_id desde la mascota
+        $mascota = Mascota::findOrFail($request->mascota_id);
+        $data['paciente_id'] = $mascota->paciente_id;
+        $data['tipo_paciente'] = 'Mascota';
 
         Historial::create($data);
 
         return redirect()->route('admin.historial.index')
-            ->with('success', 'Historial creado correctamente');
+            ->with('mensaje', 'Historial creado correctamente')
+            ->with('icono', 'success');
     }
 
     /**
@@ -130,32 +122,29 @@ class HistorialController extends Controller
             'detalle' => 'required|string',
             'fecha_visita' => 'required|date',
             'doctor_id' => 'required|exists:doctors,id',
-            'tipo_paciente' => 'required|in:Humano,Mascota',
-            'paciente_id' => 'required_if:tipo_paciente,Humano|exists:pacientes,id',
-            'mascota_id' => 'required_if:tipo_paciente,Mascota|exists:mascotas,id',
+            'mascota_id' => 'required|exists:mascotas,id',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario.')
+                ->with('icono', 'error');
         }
 
         $data = $request->all();
 
-        // Si es tipo mascota, obtenemos el paciente_id desde la mascota
-        if ($request->tipo_paciente === 'Mascota') {
-            $mascota = Mascota::findOrFail($request->mascota_id);
-            $data['paciente_id'] = $mascota->paciente_id;
-        } else {
-            // Si es humano, mascota_id es nulo
-            $data['mascota_id'] = null;
-        }
+        // Obtenemos el paciente_id desde la mascota
+        $mascota = Mascota::findOrFail($request->mascota_id);
+        $data['paciente_id'] = $mascota->paciente_id;
+        $data['tipo_paciente'] = 'Mascota';
 
         $historial->update($data);
 
         return redirect()->route('admin.historial.index')
-            ->with('success', 'Historial actualizado correctamente');
+            ->with('mensaje', 'Historial actualizado correctamente')
+            ->with('icono', 'success');
     }
 
     /**
@@ -166,7 +155,8 @@ class HistorialController extends Controller
         $historial->delete();
 
         return redirect()->route('admin.historial.index')
-            ->with('success', 'Historial eliminado correctamente');
+            ->with('mensaje', 'Historial eliminado correctamente')
+            ->with('icono', 'success');
     }
 
     /**

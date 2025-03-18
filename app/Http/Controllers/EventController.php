@@ -32,7 +32,18 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        // Cargar doctores u otros datos necesarios
+        $doctores = Doctor::all();
+
+        // Cargar mascotas del usuario actual
+        $mascotas = collect();
+        if (Auth::check() && Auth::user()->paciente) {
+            $mascotas = Mascota::where('estado', 'Activo')
+                ->where('paciente_id', Auth::user()->paciente->id)
+                ->get();
+        }
+
+        return view('admin.eventos.create', compact('doctores', 'mascotas'));
     }
 
     /**
@@ -45,6 +56,7 @@ class EventController extends Controller
             'fecha_reserva' => 'required|date',
             'hora_reserva' => 'required|string', // Hora en formato 12 horas (1:00 PM)
             'doctor_id' => 'required|exists:doctors,id',
+            'mascota_id' => 'nullable|exists:mascotas,id', // Ahora es opcional
         ]);
 
         // Convertir la hora de 12 horas (AM/PM) a 24 horas usando Carbon
@@ -136,17 +148,31 @@ class EventController extends Controller
         // Obtener el doctor por su ID
         $doctor = Doctor::find($request->doctor_id);
 
+        // Nombre del paciente/propietario (utilizamos el nombre del usuario)
+        $nombrePaciente = Auth::user()->name;
+
         // Crear el evento
         try {
+            // Al crear el evento, incluir mascota_id si existe
             $evento = new Event();
-            $evento->title = $horaReserva->format('h:i A') . " - Cita con el doctor " . $doctor->nombres; // Agregar el nombre del doctor al título
-            $evento->start = $fecha_hora_reserva; // Fecha y hora en formato de 24 horas
-            $evento->end = $fecha_hora_reserva;   // Mismo valor que `start`
-            $evento->color = '#e82216';           // Color predeterminado
-            $evento->user_id = Auth::user()->id;  // ID del usuario autenticado
+
+            // Definimos el título basado en si hay mascota o no
+            if ($request->filled('mascota_id')) {
+                $mascota = \App\Models\Mascota::find($request->mascota_id);
+                $evento->title = $horaReserva->format('h:i A') . " - Cita con el doctor " . $doctor->nombres . " para " . $mascota->nombre;
+                $evento->mascota_id = $request->mascota_id; // Guardar el ID de la mascota
+            } else {
+                $evento->title = $horaReserva->format('h:i A') . " - Cita con el doctor " . $doctor->nombres . " para " . $nombrePaciente;
+                // No asignamos mascota_id si no se proporcionó
+            }
+
+            $evento->start = $fecha_hora_reserva;
+            $evento->end = $fecha_hora_reserva;
+            $evento->color = '#e82216';
+            $evento->user_id = Auth::user()->id;
             $evento->doctor_id = $request->doctor_id;
-            $evento->consultorio_id = 1;          // Valor predeterminado o dinámico
-            $evento->estado = 'pendiente';        // Por defecto, toda nueva cita es 'pendiente'
+            $evento->consultorio_id = 1;
+            $evento->estado = 'pendiente';
             $evento->save();
 
             return redirect()->route('admin.index')

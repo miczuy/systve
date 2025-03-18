@@ -15,6 +15,7 @@ class Historial extends Model
 
     protected $casts = [
         'fecha_visita' => 'date',
+        'tipo_paciente' => 'string',
     ];
 
     public function paciente()

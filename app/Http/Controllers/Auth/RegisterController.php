@@ -75,15 +75,16 @@ class RegisterController extends Controller
         // Asignamos el rol de usuario
         $user->assignRole('usuario');
 
+        // Crear un valor único para la cédula
+        $uniqueId = 'NE-' . substr(md5(uniqid()), 0, 10);
 
-            \App\Models\Paciente::create([
+        \App\Models\Paciente::create([
             'nombres' => $data['name'], // Usamos el nombre completo temporalmente
             'apellidos' => '', // Campo vacío por ahora
             'correo' => $data['email'],
             'user_id' => $user->id,
-            'cedula' => 'Pendiente', // Un valor temporal para campos requeridos
-            'direccion' => 'Pendiente', // Un valor temporal para campos requeridos
-            // Otros campos requeridos pueden inicializarse con valores por defecto
+            'cedula' => $uniqueId, // Un valor único para cada usuario
+            'direccion' => 'No especificado', // Valor genérico
         ]);
 
         return $user;

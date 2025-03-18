@@ -25,13 +25,16 @@ class DesparasitacionMascotaController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario')
+                ->with('icono', 'error');
         }
 
         DesparasitacionMascota::create($request->all());
 
         return redirect()->back()
-            ->with('success', 'Desparasitación registrada correctamente');
+            ->with('mensaje', 'Desparasitación registrada correctamente')
+            ->with('icono', 'success');
     }
 
     /**
@@ -50,13 +53,16 @@ class DesparasitacionMascotaController extends Controller
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
-                ->withInput();
+                ->withInput()
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario')
+                ->with('icono', 'error');
         }
 
         $desparasitacion->update($request->all());
 
         return redirect()->back()
-            ->with('success', 'Desparasitación actualizada correctamente');
+            ->with('mensaje', 'Desparasitación actualizada correctamente')
+            ->with('icono', 'success');
     }
 
     /**
@@ -67,6 +73,7 @@ class DesparasitacionMascotaController extends Controller
         $desparasitacion->delete();
 
         return redirect()->back()
-            ->with('success', 'Desparasitación eliminada correctamente');
+            ->with('mensaje', 'Desparasitación eliminada correctamente')
+            ->with('icono', 'success');
     }
 }

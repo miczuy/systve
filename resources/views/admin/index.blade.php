@@ -1202,6 +1202,25 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group">
+                                            <label for="mascota_id" class="block text-sm font-medium text-slate-700/90 mb-2 ml-1 flex items-center">
+                                                <svg class="w-5 h-5 mr-2 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4M8 16l-4-4 4-4"/>
+                                                </svg>
+                                                Mascota (opcional)
+                                            </label>
+                                            <select name="mascota_id" id="mascota_id" class="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-blue-400">
+                                                <option value="">Sin mascota / Seleccionar después</option>
+                                                @foreach($mascotas as $mascota)
+                                                    <option value="{{ $mascota->id }}">
+                                                        {{ $mascota->nombre }} - {{ $mascota->especie }} {{ $mascota->raza ? '(' . $mascota->raza . ')' : '' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <p class="mt-1 text-xs text-gray-500">
+                                                Si no selecciona una mascota, podrá vincularla posteriormente durante la atención.
+                                            </p>
+                                        </div>
                                         <!-- Selector de fecha -->
                                         <div class="form-group">
                                             <label for="fecha" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">

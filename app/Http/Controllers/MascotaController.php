@@ -65,7 +65,6 @@ class MascotaController extends Controller
             'peso' => 'nullable|numeric|between:0.1,999.99',
             'caracteristicas_especiales' => 'nullable|string',
             'esterilizado' => 'boolean',
-            'microchip' => 'nullable|string|max:255',
             'alergias' => 'nullable|string',
             'condiciones_medicas' => 'nullable|string',
             'medicacion_actual' => 'nullable|string',
@@ -77,7 +76,8 @@ class MascotaController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('error', 'Por favor, corrije los errores en el formulario.');
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario.')
+                ->with('icono', 'error');
         }
 
         try {
@@ -93,11 +93,13 @@ class MascotaController extends Controller
             $mascota = Mascota::create($mascotaData);
 
             return redirect()->route('admin.mascotas.show', $mascota)
-                ->with('success', '¡La mascota ha sido registrada exitosamente!');
+                ->with('mensaje', '¡La mascota ha sido registrada exitosamente!')
+                ->with('icono', 'success');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Ocurrió un error al registrar la mascota. Por favor, inténtalo de nuevo.');
+                ->with('mensaje', 'Ocurrió un error al registrar la mascota. Por favor, inténtalo de nuevo.')
+                ->with('icono', 'error');
         }
     }
 
@@ -134,7 +136,6 @@ class MascotaController extends Controller
             'peso' => 'nullable|numeric|between:0.1,999.99',
             'caracteristicas_especiales' => 'nullable|string',
             'esterilizado' => 'boolean',
-            'microchip' => 'nullable|string|max:255',
             'alergias' => 'nullable|string',
             'condiciones_medicas' => 'nullable|string',
             'medicacion_actual' => 'nullable|string',
@@ -146,7 +147,8 @@ class MascotaController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('error', 'Por favor, corrije los errores en el formulario.');
+                ->with('mensaje', 'Por favor, corrija los errores en el formulario.')
+                ->with('icono', 'error');
         }
 
         try {
@@ -166,11 +168,13 @@ class MascotaController extends Controller
             $mascota->update($mascotaData);
 
             return redirect()->route('admin.mascotas.show', $mascota)
-                ->with('success', '¡La mascota ha sido actualizada exitosamente!');
+                ->with('mensaje', '¡La mascota ha sido actualizada exitosamente!')
+                ->with('icono', 'success');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Ocurrió un error al actualizar la mascota. Por favor, inténtalo de nuevo.');
+                ->with('mensaje', 'Ocurrió un error al actualizar la mascota. Por favor, inténtalo de nuevo.')
+                ->with('icono', 'error');
         }
     }
 
