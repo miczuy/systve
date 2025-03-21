@@ -57,7 +57,6 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/admin/usuarios/{id}', [App\Http\Controllers\UsuarioController::class, 'show'])->name('admin.usuarios.show')->can('admin.usuarios.show');
     Route::get('/admin/usuarios/{id}/edit', [App\Http\Controllers\UsuarioController::class, 'edit'])->name('admin.usuarios.edit')->can('admin.usuarios.edit');
     Route::put('/admin/usuarios/{id}', [App\Http\Controllers\UsuarioController::class, 'update'])->name('admin.usuarios.update')->can('admin.usuarios.update');
-    Route::get('/admin/usuarios/{id}/confirm-delete', [App\Http\Controllers\UsuarioController::class, 'confirmDelete'])->name('admin.usuarios.confirmDelete')->can('admin.usuarios.confirmDelete');
     Route::delete('/admin/usuarios/{id}', [App\Http\Controllers\UsuarioController::class, 'destroy'])->name('admin.usuarios.destroy')->can('admin.usuarios.destroy');
     Route::patch('/admin/usuarios/{id}/toggle-status', [App\Http\Controllers\UsuarioController::class, 'toggleStatus'])->name('admin.usuarios.toggleStatus');
 });
@@ -70,7 +69,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/enfermeras/{id}', [App\Http\Controllers\EnfermeraController::class, 'show'])->name('admin.enfermeras.show')->can('admin.enfermeras.show');
     Route::get('/admin/enfermeras/{id}/edit', [App\Http\Controllers\EnfermeraController::class, 'edit'])->name('admin.enfermeras.edit')->can('admin.enfermeras.edit');
     Route::put('/admin/enfermeras/{id}', [App\Http\Controllers\EnfermeraController::class, 'update'])->name('admin.enfermeras.update')->can('admin.enfermeras.update');
-    Route::get('/admin/enfermeras/{id}/confirm-delete', [App\Http\Controllers\EnfermeraController::class, 'confirmDelete'])->name('admin.enfermeras.confirmDelete')->can('admin.enfermeras.confirmDelete');
     Route::delete('/admin/enfermeras/{id}', [App\Http\Controllers\EnfermeraController::class, 'destroy'])->name('admin.enfermeras.destroy')->can('admin.enfermeras.destroy');
 });
 
@@ -83,7 +81,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/pacientes/{id}', [App\Http\Controllers\PacienteController::class, 'show'])->name('admin.pacientes.show')->can('admin.pacientes.show');
     Route::get('/admin/pacientes/{id}/edit', [App\Http\Controllers\PacienteController::class, 'edit'])->name('admin.pacientes.edit')->can('admin.pacientes.edit');
     Route::put('/admin/pacientes/{id}', [App\Http\Controllers\PacienteController::class, 'update'])->name('admin.pacientes.update')->can('admin.pacientes.update');
-    Route::get('/admin/pacientes/{id}/confirm-delete', [App\Http\Controllers\PacienteController::class, 'confirmDelete'])->name('admin.pacientes.confirmDelete')->can('admin.pacientes.confirmDelete');
     Route::delete('/admin/pacientes/{id}', [App\Http\Controllers\PacienteController::class, 'destroy'])->name('admin.pacientes.destroy')->can('admin.pacientes.destroy');
 });
 
@@ -105,7 +102,6 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::get('/admin/consultorios/{id}', [App\Http\Controllers\ConsultorioController::class, 'show'])->name('admin.consultorios.show')->can('admin.consultorios.show');
     Route::get('/admin/consultorios/{id}/edit', [App\Http\Controllers\ConsultorioController::class, 'edit'])->name('admin.consultorios.edit')->can('admin.consultorios.edit');
     Route::put('/admin/consultorios/{id}', [App\Http\Controllers\ConsultorioController::class, 'update'])->name('admin.consultorios.update')->can('admin.consultorios.update');
-    Route::get('/admin/consultorios/{id}/confirm-delete', [App\Http\Controllers\ConsultorioController::class, 'confirmDelete'])->name('admin.consultorios.confirmDelete')->can('admin.consultorios.confirmDelete');
     Route::delete('/admin/consultorios/{id}', [App\Http\Controllers\ConsultorioController::class, 'destroy'])->name('admin.consultorios.destroy')->can('admin.consultorios.destroy');
     Route::patch('/admin/consultorios/{consultorio}/toggle-estado', [App\Http\Controllers\ConsultorioController::class, 'toggleEstado'])->name('admin.consultorios.toggleEstado');
 });
@@ -119,7 +115,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/doctores/{id}', [App\Http\Controllers\DoctorController::class, 'show'])->name('admin.doctores.show')->can('admin.doctores.show');
     Route::get('/admin/doctores/{id}/edit', [App\Http\Controllers\DoctorController::class, 'edit'])->name('admin.doctores.edit')->can('admin.doctores.edit');
     Route::put('/admin/doctores/{id}', [App\Http\Controllers\DoctorController::class, 'update'])->name('admin.doctores.update')->can('admin.doctores.update');
-    Route::get('/admin/doctores/{id}/confirm-delete', [App\Http\Controllers\DoctorController::class, 'confirmDelete'])->name('admin.doctores.confirmDelete')->can('admin.doctores.confirmDelete');
     Route::delete('/admin/doctores/{id}', [App\Http\Controllers\DoctorController::class, 'destroy'])->name('admin.doctores.destroy')->can('admin.doctores.destroy');
 });
 
@@ -143,13 +138,15 @@ Route::middleware(['auth'])->group(function () {
 
 // Rutas Usuario
 Route::middleware(['auth'])->group(function () {
-    Route::get('/consultorios/{id}', [WebController::class, 'cargar_datos_consultorios'])->name('cargar_datos_consultorios')->can('cargar_datos_consultorios');
+
     Route::get('cargar_reserva_doctores/{id}', [WebController::class, 'cargar_reserva_doctores'])->name('cargar_reserva_doctores')->can('cargar_reserva_doctores');
     Route::get('admin/ver_reservas/{id}', [AdminController::class, 'ver_reservas'])->name('ver_reservas')->can('ver_reservas');
     Route::post('admin/eventos/create', [App\Http\Controllers\EventController::class, 'store'])->name('admin.eventos.create')->can('admin.eventos.create');
     Route::delete('admin/eventos/destroy/{id}', [App\Http\Controllers\EventController::class, 'destroy'])->name('admin.eventos.destroy')->can('admin.eventos.destroy');
 });
 
+// Rutas cargar_datos_consultorios
+Route::get('/consultorios/{id}', [WebController::class, 'cargar_datos_consultorios'])->name('cargar_datos_consultorios');
 
 // Rutas para las reservas
 Route::middleware(['auth'])->group(function () {
@@ -182,14 +179,14 @@ Route::middleware(['auth'])->group(function () {
 // Rutas para mascotas (administración)
 Route::middleware(['auth'])->group(function () {
     // CRUD de mascotas
-    Route::get('/admin/mascotas', [MascotaController::class, 'index'])->name('admin.mascotas.index')->can('admin.mascotas.index');
-    Route::get('/admin/mascotas/create', [MascotaController::class, 'create'])->name('admin.mascotas.create')->can('admin.mascotas.create');
-    Route::post('/admin/mascotas', [MascotaController::class, 'store'])->name('admin.mascotas.store')->can('admin.mascotas.store');
-    Route::get('/admin/mascotas/{mascota}', [MascotaController::class, 'show'])->name('admin.mascotas.show')->can('admin.mascotas.show');
-    Route::get('/admin/mascotas/{mascota}/edit', [MascotaController::class, 'edit'])->name('admin.mascotas.edit')->can('admin.mascotas.edit');
-    Route::put('/admin/mascotas/{mascota}', [MascotaController::class, 'update'])->name('admin.mascotas.update')->can('admin.mascotas.update');
-    Route::get('/admin/mascotas/{mascota}/confirm-delete', [MascotaController::class, 'confirmDelete'])->name('admin.mascotas.confirmDelete')->can('admin.mascotas.confirmDelete');
-    Route::delete('/admin/mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('admin.mascotas.destroy')->can('admin.mascotas.destroy');
+    Route::get('/admin/mascotas', [App\Http\Controllers\MascotaController::class, 'index'])->name('admin.mascotas.index')->can('admin.mascotas.index');
+    Route::get('/admin/mascotas/create', [App\Http\Controllers\MascotaController::class, 'create'])->name('admin.mascotas.create')->can('admin.mascotas.create');
+    Route::post('/admin/mascotas/create', [App\Http\Controllers\MascotaController::class, 'store'])->name('admin.mascotas.store')->can('admin.mascotas.store');
+    Route::get('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'show'])->name('admin.mascotas.show')->can('admin.mascotas.show');
+    Route::get('/admin/mascotas/{mascota}/edit', [App\Http\Controllers\MascotaController::class, 'edit'])->name('admin.mascotas.edit')->can('admin.mascotas.edit');
+    Route::put('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'update'])->name('admin.mascotas.update')->can('admin.mascotas.update');
+    Route::get('/admin/mascotas/{mascota}/confirm-delete', [App\Http\Controllers\MascotaController::class, 'confirmDelete'])->name('admin.mascotas.confirmDelete')->can('admin.mascotas.confirmDelete');
+    Route::delete('/admin/mascotas/{mascota}', [App\Http\Controllers\MascotaController::class, 'destroy'])->name('admin.mascotas.destroy')->can('admin.mascotas.destroy');
 
     // API para obtener mascotas por paciente
     Route::get('/admin/api/pacientes/{pacienteId}/mascotas', [MascotaController::class, 'getByPaciente'])->name('admin.mascotas.getByPaciente')->can('admin.mascotas.getByPaciente');
@@ -215,10 +212,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('historial/{historial}', [HistorialController::class, 'show'])->name('admin.historial.show');
 
 // Rutas para pacientes (acceso a sus propias mascotas)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/paciente/mascotas', [PacienteMascotaController::class, 'index'])->name('paciente.mascotas.index')->can('ver.perfil.paciente');
-    Route::get('/paciente/mascotas/{mascota}', [PacienteMascotaController::class, 'show'])->name('paciente.mascotas.show')->can('ver.perfil.paciente');
-});
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/paciente/mascotas', [App\Http\Controllers\PacienteMascotaController::class, 'index'])->name('paciente.mascotas.index')->can('ver.perfil.paciente');
+        Route::get('/paciente/mascotas/create', [App\Http\Controllers\PacienteMascotaController::class, 'create'])->name('paciente.mascotas.create')->can('ver.perfil.paciente');
+        Route::post('/paciente/mascotas/create', [App\Http\Controllers\PacienteMascotaController::class, 'store'])->name('paciente.mascotas.store')->can('ver.perfil.paciente');
+        Route::get('/paciente/mascotas/{mascota}', [App\Http\Controllers\PacienteMascotaController::class, 'show'])->name('paciente.mascotas.show')->can('ver.perfil.paciente');
+        Route::get('/paciente/mascotas/{mascota}/edit', [App\Http\Controllers\PacienteMascotaController::class, 'edit'])->name('paciente.mascotas.edit')->can('ver.perfil.paciente');
+        Route::put('/paciente/mascotas/{mascota}', [App\Http\Controllers\PacienteMascotaController::class, 'update'])->name('paciente.mascotas.update')->can('ver.perfil.paciente');
+        Route::delete('/paciente/mascotas/{mascota}', [App\Http\Controllers\PacienteMascotaController::class, 'destroy'])->name('paciente.mascotas.destroy')->can('ver.perfil.paciente');
+    });
 
 Route::get('/doctor/{doctor}/especialidades', function(App\Models\Doctor $doctor) {
     return response()->json([

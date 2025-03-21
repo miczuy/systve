@@ -27,6 +27,7 @@ class AdminController extends Controller
         $total_horarios = Horario::count();
         $total_eventos = Event::count();
         $total_configuraciones = Configuracione::count();
+        $total_mascotas = Mascota::count();
 
         // Código mejorado para obtener mascotas
         $mascotas = collect();
@@ -55,7 +56,7 @@ class AdminController extends Controller
 
         return view('admin.index', compact(
             'total_usuarios', 'total_enfermeras', 'total_pacientes',
-            'total_consultorios', 'total_doctores', 'total_horarios',
+            'total_consultorios', 'total_doctores', 'total_horarios','total_mascotas',
             'consultorios', 'doctores', 'specialties', 'eventos',
             'total_eventos', 'total_configuraciones', 'mascotas'
         ));

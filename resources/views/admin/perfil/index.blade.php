@@ -66,12 +66,12 @@
                                 <div class="flex border-b border-gray-50 pb-2 group">
                                     <span class="w-1/3 text-sm font-medium text-gray-500 group-hover:text-indigo-600 transition duration-300 text-right pr-4">Cédula:</span>
                                     <span class="w-2/3 text-sm font-medium text-gray-900">
-        @if(strpos($paciente->cedula, 'NE-') === 0)
+                                        @if(strpos($paciente->cedula, 'NE-') === 0)
                                             No especificado
                                         @else
                                             {{ $paciente->cedula }}
                                         @endif
-    </span>
+                                    </span>
                                 </div>
 
                                 <div class="flex border-b border-gray-50 pb-2 group">

@@ -66,11 +66,34 @@
                                                 </svg>
                                             </a>
 
-                                            <a href="{{ url('admin/enfermeras/'.$enfermera->id.'/confirm-delete') }}" class="p-2 rounded-lg bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-red-200 transition-all">
-                                                <svg class="w-5 h-5 text-gray-600 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                            </a>
+                                            <form action="{{ url('admin/enfermeras/'.$enfermera->id) }}" id="formulario{{$enfermera->id}}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" onclick="preguntar{{$enfermera->id}}(event)" class="p-2 rounded-lg bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-red-200 transition-all">
+                                                    <svg class="w-5 h-5 text-gray-600 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                            <script>
+                                                function preguntar{{$enfermera->id}}(event) {
+                                                    event.preventDefault();
+                                                    Swal.fire({
+                                                        title: "¿Está seguro de desactivar esta enfermera?",
+                                                        text: "La enfermera no podrá acceder al sistema, pero sus datos se conservarán en la base de datos.",
+                                                        icon: "question",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#4B5563",
+                                                        cancelButtonColor: "#3085d6",
+                                                        confirmButtonText: "Sí, desactivar",
+                                                        cancelButtonText: "Cancelar"
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            document.getElementById('formulario{{$enfermera->id}}').submit();
+                                                        }
+                                                    });
+                                                }
+                                            </script>
                                         </div>
                                     </td>
                                 </tr>

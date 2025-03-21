@@ -92,13 +92,35 @@
                                                 </svg>
                                             </a>
 
-                                            <!-- Eliminar -->
-                                            <a href="{{ route('admin.horarios.confirmDelete', $horario->id) }}"
-                                               class="p-2 rounded-lg bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-red-200 transition-all">
-                                                <svg class="w-5 h-5 text-gray-600 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                            </a>
+                                            <!-- Eliminar con SweetAlert -->
+                                            <form action="{{ url('admin/horarios/'.$horario->id) }}" id="formulario{{$horario->id}}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" onclick="preguntar{{$horario->id}}(event)" class="p-2 rounded-lg bg-white shadow-sm hover:shadow-md border border-gray-200 hover:border-red-200 transition-all">
+                                                    <svg class="w-5 h-5 text-gray-600 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                            <script>
+                                                function preguntar{{$horario->id}}(event) {
+                                                    event.preventDefault();
+                                                    Swal.fire({
+                                                        title: "¿Está seguro de eliminar este horario?",
+                                                        text: "Se eliminará el horario del día {{$horario->dia}} de {{$horario->hora_inicio ? Carbon::parse($horario->hora_inicio)->format('h:i A') : '--'}} a {{$horario->hora_fin ? Carbon::parse($horario->hora_fin)->format('h:i A') : '--'}}. Esta acción no se puede deshacer.",
+                                                        icon: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#d33",
+                                                        cancelButtonColor: "#3085d6",
+                                                        confirmButtonText: "Sí, eliminar",
+                                                        cancelButtonText: "Cancelar"
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            document.getElementById('formulario{{$horario->id}}').submit();
+                                                        }
+                                                    });
+                                                }
+                                            </script>
                                         </div>
                                     </td>
                                 </tr>
@@ -147,34 +169,49 @@
                         </select>
                     </div>
                     <br>
-                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                    <script>
-                        $('#consultorio_select').on('change', function() {
-                            const consultorio_id = $(this).val(); // Usar 'const' y 'this' para mayor claridad
-                            if (consultorio_id) {
-                                let url = "{{ route('admin.horarios.cargar_datos_consultorios', ':id') }}";
-                                url = url.replace(':id', consultorio_id);
-
-                                $.ajax({
-                                    url: url,
-                                    type: 'GET',
-                                    success: function(data) {
-                                        $('#consultorio_info').html(data);
-                                    },
-                                    error: function(jqXHR, textStatus, errorThrown) {
-                                        console.error('Error al obtener los datos del consultorio:', textStatus, errorThrown);
-                                        alert('Error al obtener los datos del consultorio. Por favor, inténtelo de nuevo más tarde.');
-                                    }
-                                });
-                            } else {
-                                $('#consultorio_info').html('');
-                            }
-                        });
-                    </script>
                     <div id="consultorio_info"></div>
-
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Asegúrate de incluir SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#consultorio_select').on('change', function() {
+                const consultorio_id = $(this).val();
+                if (consultorio_id) {
+                    let url = "{{ route('admin.horarios.cargar_datos_consultorios', ':id') }}";
+                    url = url.replace(':id', consultorio_id);
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function(data) {
+                            $('#consultorio_info').html(data);
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error al obtener los datos del consultorio:', textStatus, errorThrown);
+                            alert('Error al obtener los datos del consultorio. Por favor, inténtelo de nuevo más tarde.');
+                        }
+                    });
+                } else {
+                    $('#consultorio_info').html('');
+                }
+            });
+        });
+
+        // Mensaje de éxito después de eliminar
+        @if(session('mensaje'))
+        Swal.fire({
+            title: "¡Completado!",
+            text: "{{ session('mensaje') }}",
+            icon: "{{ session('icono', 'success') }}",
+            timer: 3000,
+            timerProgressBar: true
+        });
+        @endif
+    </script>
 @endsection

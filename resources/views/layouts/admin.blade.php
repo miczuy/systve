@@ -135,11 +135,11 @@
 
 
                 <!-- Vista que solo ve Usuarios (Reportes)-->
-                @can('admin.usuarios.index')
+                @can('admin.reservas.reportes')
                     <li class="nav-link">
                         <a href="{{url('admin/reservas/reportes')}}">
                             <div class="icon">
-                                <img src="   https://cdn-icons-png.flaticon.com/512/3147/3147258.png " width="50" height="50" alt="" title="" class="img-small">
+                                <img src="https://cdn-icons-png.flaticon.com/512/3147/3147258.png" width="50" height="50" alt="" title="" class="img-small">
                             </div>
                             <span class="text nav-text">Reservas</span>
                         </a>
@@ -147,7 +147,7 @@
                 @endcan
 
 
-                <!-- Vista que solo ve Usuarios (Reportes)-->
+                <!-- Vista que solo ve Historial-->
                 @can('admin.historial.index')
                     <li class="nav-link">
                         <a href="{{url('/admin/historial')}}">

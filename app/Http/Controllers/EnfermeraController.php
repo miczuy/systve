@@ -146,20 +146,15 @@ class EnfermeraController extends Controller
 
     public function destroy($id)
     {
-        $enfermera = Enfermera::find($id);
+        $enfermera = Enfermera::findOrFail($id);
 
-        //eliminar el usuario asociado
+        // Desactivar solo el usuario asociado
         $user = $enfermera->user;
-        $user->delete();
-
-        //eliminar a la enfermera
-        $enfermera->delete();
-
+        $user->status = false;
+        $user->save();
 
         return redirect()->route('admin.enfermeras.index')
-            ->with('mensaje',' Se Elimino a la enfermera')
-            ->with('icono','success');
-
-
+            ->with('mensaje', 'Enfermera desactivada correctamente')
+            ->with('icono', 'success');
     }
 }

@@ -9,9 +9,7 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 space-y-4 md:space-y-0 bg-white">
                         <div class="flex items-center space-x-4">
                             <div class="bg-gradient-to-br from-blue-600 to-purple-600 p-3 rounded-xl shadow-lg">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                                </svg>
+                                <img src="https://cdn-icons-png.flaticon.com/512/2138/2138440.png" class="w-10 h-10" alt="Mascotas">
                             </div>
                             <div>
                                 <h2 class="text-3xl font-bold text-gray-800 font-montserrat">Gestión de Mascotas</h2>
@@ -92,7 +90,7 @@
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
                                                 @if($mascota->foto)
-                                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ Storage::url($mascota->foto) }}" alt="{{ $mascota->nombre }}">
+                                                    <img src="{{ url('storage/'.$mascota->foto) }}" alt="foto" class="w-10 h-10 object-cover rounded">
                                                 @else
                                                     <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
                                                         <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

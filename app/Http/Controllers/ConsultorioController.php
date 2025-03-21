@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Consultorio;
+use App\Models\Horario;
+use App\Models\Event;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ConsultorioController extends Controller
@@ -52,7 +55,78 @@ class ConsultorioController extends Controller
     public function show($id)
     {
         $consultorio = Consultorio::findOrFail($id);
-        return view('admin.consultorios.show', compact('consultorio'));
+
+        // Obtener horarios asignados a este consultorio
+        $horarios = Horario::with('doctor')
+            ->where('consultorio_id', $id)
+            ->orderBy('dia')
+            ->orderBy('hora_inicio')
+            ->get();
+
+        // Obtener citas programadas (eventos) para este consultorio
+        $fechaActual = Carbon::now()->startOfDay();
+        $fechaLimite = Carbon::now()->addDays(30)->endOfDay(); // Próximos 30 días
+
+        $eventos = Event::with(['doctor', 'user'])
+            ->where('consultorio_id', $id)
+            ->whereIn('estado', ['pendiente', 'atendida']) // Solo mostrar citas activas
+            ->whereBetween('start', [$fechaActual, $fechaLimite])
+            ->orderBy('start')
+            ->get();
+
+        // Organizar eventos por fecha
+        $eventosPorFecha = [];
+        foreach ($eventos as $evento) {
+            $fecha = $evento->start->format('Y-m-d');
+            if (!isset($eventosPorFecha[$fecha])) {
+                $eventosPorFecha[$fecha] = [];
+            }
+            $eventosPorFecha[$fecha][] = $evento;
+        }
+
+        // Calcular disponibilidad actual (basada en los horarios y eventos)
+        $disponibilidad = $this->calcularDisponibilidad($horarios, $eventosPorFecha);
+
+        return view('admin.consultorios.show', compact(
+            'consultorio',
+            'horarios',
+            'eventos',
+            'eventosPorFecha',
+            'disponibilidad'
+        ));
+    }
+
+    /**
+     * Calcula la disponibilidad del consultorio basado en horarios y eventos.
+     */
+    private function calcularDisponibilidad($horarios, $eventosPorFecha)
+    {
+        $disponibilidad = [
+            'total_horas_semanales' => 0,
+            'horas_ocupadas_proximos_dias' => 0,
+            'porcentaje_ocupacion' => 0,
+        ];
+
+        // Calcular horas semanales disponibles según horarios
+        foreach ($horarios as $horario) {
+            $horaInicio = Carbon::parse($horario->hora_inicio);
+            $horaFin = Carbon::parse($horario->hora_fin);
+            $horasDiarias = $horaFin->diffInHours($horaInicio);
+            $disponibilidad['total_horas_semanales'] += $horasDiarias;
+        }
+
+        // Calcular horas ocupadas en próximos días
+        foreach ($eventosPorFecha as $fecha => $eventosDelDia) {
+            $disponibilidad['horas_ocupadas_proximos_dias'] += count($eventosDelDia);
+        }
+
+        // Calcular porcentaje (estimado para los próximos 7 días)
+        if ($disponibilidad['total_horas_semanales'] > 0) {
+            $horasPosiblesProximaSemana = $disponibilidad['total_horas_semanales'];
+            $disponibilidad['porcentaje_ocupacion'] = min(100, round(($disponibilidad['horas_ocupadas_proximos_dias'] / $horasPosiblesProximaSemana) * 100));
+        }
+
+        return $disponibilidad;
     }
 
     /**
@@ -99,13 +173,15 @@ class ConsultorioController extends Controller
     /**
      * Elimina un consultorio de la base de datos.
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $consultorio = Consultorio::findOrFail($id);
-        $consultorio->delete();
+
+        // En vez de eliminar, cambiar is_active a falso
+        $consultorio->is_active = false;
+        $consultorio->save();
 
         return redirect()->route('admin.consultorios.index')
-            ->with('mensaje', 'Se eliminó el consultorio correctamente')
+            ->with('mensaje', 'Consultorio desactivado correctamente')
             ->with('icono', 'success');
     }
 
@@ -121,5 +197,37 @@ class ConsultorioController extends Controller
         return redirect()->route('admin.consultorios.index')
             ->with('mensaje', 'El estado del consultorio fue actualizado correctamente.')
             ->with('icono', 'success');
+    }
+
+    /**
+     * Obtiene los horarios disponibles para un consultorio específico.
+     */
+    public function getHorarios($id)
+    {
+        $horarios = Horario::with('doctor')
+            ->where('consultorio_id', $id)
+            ->orderBy('dia')
+            ->orderBy('hora_inicio')
+            ->get();
+
+        return response()->json($horarios);
+    }
+
+    /**
+     * Obtiene las citas programadas para un consultorio específico.
+     */
+    public function getEventos($id)
+    {
+        $fechaActual = Carbon::now()->startOfDay();
+        $fechaLimite = Carbon::now()->addDays(30)->endOfDay();
+
+        $eventos = Event::with(['doctor', 'user'])
+            ->where('consultorio_id', $id)
+            ->whereIn('estado', ['pendiente', 'atendida'])
+            ->whereBetween('start', [$fechaActual, $fechaLimite])
+            ->orderBy('start')
+            ->get();
+
+        return response()->json($eventos);
     }
 }

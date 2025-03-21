@@ -66,7 +66,7 @@
                 <!-- Confirmar Contraseña -->
                 <div>
                     <label for="password-confirm" class="block text-sm font-medium text-gray-700">Confirmar Contraseña</label>
-                    <input id="password-confirm" type="password" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition"
+                    <input id="password-confirm" type="password" class="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400 transition" placeholder="Coloque una contraseña de 8 digitos"
                            name="password_confirmation" required autocomplete="new-password">
                 </div>
 

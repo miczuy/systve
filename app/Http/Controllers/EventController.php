@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Configuracione;
+use App\Models\Consultorio;
 use App\Models\Doctor;
 use App\Models\Event;
 use App\Models\Horario;
+use App\Models\Mascota;
+use App\Models\Paciente;
 use App\Models\Specialty;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,20 +35,29 @@ class EventController extends Controller
      */
     public function create()
     {
-        // Cargar doctores u otros datos necesarios
-        $doctores = Doctor::all();
+        // Obtener el paciente autenticado
+        $user = auth()->user();
+        $paciente = Paciente::where('user_id', $user->id)->first();
 
-        // Cargar mascotas del usuario actual
-        $mascotas = collect();
-        if (Auth::check() && Auth::user()->paciente) {
-            $mascotas = Mascota::where('estado', 'Activo')
-                ->where('paciente_id', Auth::user()->paciente->id)
-                ->get();
+        if (!$paciente) {
+            return redirect()->route('home')
+                ->with('mensaje', 'No tienes un perfil de paciente configurado')
+                ->with('icono', 'error');
         }
 
-        return view('admin.eventos.create', compact('doctores', 'mascotas'));
-    }
+        // Obtener las mascotas activas del paciente
+        $mascotas = Mascota::where('paciente_id', $paciente->id)
+            ->where('estado', 'Activo')
+            ->get();
 
+        // Obtener consultorios activos
+        $consultorios = Consultorio::where('estado', 1)->get();
+
+        // Otros datos que puedas necesitar para el formulario
+        $doctores = Doctor::all(); // O alguna otra lógica específica
+
+        return view('paciente.citas.create', compact('mascotas', 'consultorios', 'doctores'));
+    }
     /**
      * Store a newly created resource in storage.
      */

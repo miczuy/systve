@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('alergias')->nullable();     // Alergias conocidas
             $table->text('condiciones_medicas')->nullable(); // Condiciones médicas crónicas
             $table->text('medicacion_actual')->nullable(); // Medicamentos actuales
-            $table->string('foto')->nullable();       // Ruta a la foto de la mascota
+            $table->string('foto');       // Ruta a la foto de la mascota
             $table->enum('estado', ['Activo', 'Inactivo', 'Fallecido'])->default('Activo');
             $table->timestamps();
             $table->softDeletes();

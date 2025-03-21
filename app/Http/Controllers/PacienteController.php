@@ -236,8 +236,19 @@ class PacienteController extends Controller
                     $newUser->password = Hash::make($request->input('password'));
                     $newUser->save();
 
-                    // Asignar rol de paciente
-                    $newUser->assignRole('paciente');
+                    // Asignar rol de paciente de manera más segura
+                    $rolPaciente = \Spatie\Permission\Models\Role::where('name', 'usuario')->first();
+
+                    if ($rolPaciente) {
+                        // Asignar el rol directamente
+                        $newUser->roles()->attach($rolPaciente->id);
+
+                        // Verificar asignación de rol
+                        \Log::info('Rol asignado al usuario: ' . $newUser->id . ' - Rol: paciente');
+                    } else {
+                        \Log::error('No se encontró el rol "paciente" en la base de datos');
+                        throw new \Exception('No se pudo asignar el rol de paciente. Por favor, contacte al administrador.');
+                    }
                 }
 
                 // Crear un nuevo paciente
@@ -271,6 +282,12 @@ class PacienteController extends Controller
                 // Información adicional si se creó un usuario
                 if ($newUser) {
                     $mensaje .= ' y se creó una cuenta de acceso con el correo como nombre de usuario';
+
+                    // Verificación adicional del rol
+                    if (!$newUser->hasRole('paciente')) {
+                        \Log::warning('Usuario creado sin rol de paciente. Intentando reasignar...');
+                        $newUser->assignRole('paciente');
+                    }
                 }
             }
 
@@ -450,26 +467,24 @@ class PacienteController extends Controller
             if ($paciente->user_id) {
                 $usuario = User::find($paciente->user_id);
                 if ($usuario) {
-                    // Eliminar usuario asociado
-                    $usuario->delete();
+                    // Desactivar usuario asociado
+                    $usuario->status = false;
+                    $usuario->save();
                 }
             }
-
-            // Eliminar paciente
-            $paciente->delete();
 
             \DB::commit();
 
             return redirect()->route('admin.pacientes.index')
-                ->with('mensaje', 'Paciente eliminado correctamente')
+                ->with('mensaje', 'Paciente desactivado correctamente')
                 ->with('icono', 'success');
         } catch (\Exception $e) {
             \DB::rollBack();
 
-            \Log::error('Error al eliminar paciente: ' . $e->getMessage());
+            \Log::error('Error al desactivar paciente: ' . $e->getMessage());
 
             return redirect()->route('admin.pacientes.index')
-                ->with('mensaje', 'Error al eliminar el paciente: ' . $e->getMessage())
+                ->with('mensaje', 'Error al desactivar el paciente: ' . $e->getMessage())
                 ->with('icono', 'error');
         }
     }

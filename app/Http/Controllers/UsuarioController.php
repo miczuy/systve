@@ -102,15 +102,17 @@ class UsuarioController extends Controller
 
     }
 
-    public function confirmDelete($id){
-        $usuario = User::findOrFail($id);
-        return view('admin.usuarios.delete', compact('usuario'));
-}
+
 
     public function destroy($id) {
-        $usuario = User::destroy($id);
+        $usuario = User::findOrFail($id);
+
+        // En vez de eliminar, cambiar el status a inactivo
+        $usuario->status = false;
+        $usuario->save();
+
         return redirect()->route('admin.usuarios.index')
-            ->with('mensaje', 'Se Eliminó Correctamente')
+            ->with('mensaje', 'Usuario desactivado correctamente')
             ->with('icono', 'success');
     }
 

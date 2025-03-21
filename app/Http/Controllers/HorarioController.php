@@ -22,11 +22,11 @@ class HorarioController extends Controller
     }
 
     public function cargar_datos_consultorios($id){
-    try{
-        $horarios = Horario::with('doctor', 'consultorio')->where('consultorio_id', $id)->get();
-        return view('admin.horarios.cargar_datos_consultorios',compact('horarios'));
-    }catch (\Exception $exception){
-        return response ()->json(['mensaje' => 'Error']);
+        try{
+            $horarios = Horario::with('doctor', 'consultorio')->where('consultorio_id', $id)->get();
+            return view('admin.horarios.cargar_datos_consultorios',compact('horarios'));
+        }catch (\Exception $exception){
+            return response ()->json(['mensaje' => 'Error']);
         }
     }
 
@@ -138,24 +138,138 @@ class HorarioController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Horario $horario)
+    public function edit($id)
     {
-        return view('admin.horarios.edit', compact('horario'));
+        $horario = Horario::findOrFail($id);
+
+        // Obtener consultorios activos
+        $consultorios = Consultorio::where('is_active', true)->get();
+
+        // Obtener doctores con usuarios activos
+        $doctores = Doctor::with('specialties')
+            ->whereHas('user', function ($query) {
+                $query->where('status', true);
+            })
+            ->get();
+
+        return view('admin.horarios.edit', compact('horario', 'consultorios', 'doctores'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Horario $horario)
+    public function update(Request $request, $id)
     {
-        //
+        // Validar los datos del formulario
+        $request->validate([
+            'dia' => 'required|string',
+            'hora_inicio' => 'required',
+            'hora_fin' => 'required|after:hora_inicio',
+            'consultorio_id' => 'required|exists:consultorios,id',
+            'doctor_id' => 'required|exists:doctors,id',
+        ]);
+
+        $horario = Horario::findOrFail($id);
+
+        // Determinar el formato de la hora y convertir correctamente
+        try {
+            // Comprobar si tiene formato AM/PM
+            if (strpos($request->hora_inicio, 'AM') !== false ||
+                strpos($request->hora_inicio, 'PM') !== false ||
+                strpos($request->hora_inicio, 'am') !== false ||
+                strpos($request->hora_inicio, 'pm') !== false) {
+
+                $horaInicio = Carbon::createFromFormat('h:i A', $request->hora_inicio);
+                $horaFin = Carbon::createFromFormat('h:i A', $request->hora_fin);
+            }
+            // Si tiene formato de 24 horas (H:i)
+            else if (strpos($request->hora_inicio, ':') !== false) {
+                $horaInicio = Carbon::createFromFormat('H:i', $request->hora_inicio);
+                $horaFin = Carbon::createFromFormat('H:i', $request->hora_fin);
+            }
+            // Si ninguno de los anteriores funciona, intentar con otro formato común
+            else {
+                throw new \Exception('Formato de hora no reconocido');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('mensaje', 'Formato de hora no válido: ' . $e->getMessage())
+                ->with('icono', 'error');
+        }
+
+        // Asegurarse de que las conversiones fueron exitosas y normalizar al formato H:i
+        $request->merge([
+            'hora_inicio' => $horaInicio->format('H:i'),
+            'hora_fin' => $horaFin->format('H:i'),
+        ]);
+
+        // Resto del código de validación de rango de horas y solapamiento...
+        // [mantener el resto de tu código igual]
+
+        // Definir el rango de horas permitido
+        $horaPermitidaInicio = Carbon::createFromTime(8, 0); // 8:00 AM
+        $horaPermitidaFin = Carbon::createFromTime(18, 0);   // 6:00 PM
+
+        // Verificar si las horas están dentro del rango permitido
+        if ($horaInicio->lt($horaPermitidaInicio) || $horaFin->gt($horaPermitidaFin)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('mensaje', 'El horario no está dentro del rango permitido (8:00 AM - 6:00 PM).')
+                ->with('icono', 'error');
+        }
+
+        // Verificar si el horario existe (excluyendo el horario actual)
+        $horarioExistente = Horario::where('dia', $request->dia)
+            ->where('consultorio_id', $request->consultorio_id)
+            ->where('id', '!=', $id) // Excluir el horario actual
+            ->where(function ($query) use ($request) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('hora_inicio', '>=', $request->hora_inicio)
+                        ->where('hora_inicio', '<', $request->hora_fin);
+                })
+                    ->orWhere(function ($query) use ($request) {
+                        $query->where('hora_fin', '>', $request->hora_inicio)
+                            ->where('hora_fin', '<=', $request->hora_fin);
+                    })
+                    ->orWhere(function ($query) use ($request) {
+                        $query->where('hora_inicio', '<', $request->hora_inicio)
+                            ->where('hora_fin', '>', $request->hora_fin);
+                    });
+            })
+            ->exists();
+
+        if ($horarioExistente) {
+            return redirect()->back()
+                ->withInput()
+                ->with('mensaje', 'Ya existe un horario con este día y rango de horas para este consultorio.')
+                ->with('icono', 'error');
+        }
+
+        // Actualizar el horario
+        $horario->update([
+            'dia' => $request->dia,
+            'hora_inicio' => $request->hora_inicio,
+            'hora_fin' => $request->hora_fin,
+            'doctor_id' => $request->doctor_id,
+            'consultorio_id' => $request->consultorio_id
+        ]);
+
+        return redirect()->route('admin.horarios.index')
+            ->with('mensaje', 'Horario actualizado correctamente.')
+            ->with('icono', 'success');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Horario $horario)
+    public function destroy($id)
     {
-        //
+        $horario = Horario::findOrFail($id);
+        $horario->delete();
+
+        return redirect()->route('admin.horarios.index')
+            ->with('mensaje', 'Horario eliminado correctamente.')
+            ->with('icono', 'success');
     }
 }

@@ -54,7 +54,7 @@ class MascotaController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'paciente_id' => 'required|exists:pacientes,id',
             'nombre' => 'required|string|max:255',
             'especie' => 'required|string|max:255',
@@ -72,36 +72,35 @@ class MascotaController extends Controller
             'estado' => 'required|in:Activo,Inactivo,Fallecido',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('mensaje', 'Por favor, corrija los errores en el formulario.')
-                ->with('icono', 'error');
+        $mascota = new Mascota(); // Suponiendo que este es el modelo correspondiente
+
+        $mascota->paciente_id = $request->paciente_id;
+        $mascota->nombre = $request->nombre;
+        $mascota->especie = $request->especie;
+        $mascota->raza = $request->raza;
+        $mascota->color = $request->color;
+        $mascota->sexo = $request->sexo;
+        $mascota->fecha_nacimiento = $request->fecha_nacimiento;
+        $mascota->peso = $request->peso;
+        $mascota->caracteristicas_especiales = $request->caracteristicas_especiales;
+        $mascota->esterilizado = $request->boolean('esterilizado');
+        $mascota->alergias = $request->alergias;
+        $mascota->condiciones_medicas = $request->condiciones_medicas;
+        $mascota->medicacion_actual = $request->medicacion_actual;
+
+        if ($request->hasFile('foto')) {
+            $mascota->foto = $request->file('foto')->store('fotos', 'public');
         }
 
-        try {
-            $mascotaData = $request->except('foto');
+        $mascota->estado = $request->estado;
 
-            if ($request->hasFile('foto')) {
-                $foto = $request->file('foto');
-                $nombreFoto = time() . '_' . $foto->getClientOriginalName();
-                $rutaFoto = $foto->storeAs('mascotas', $nombreFoto, 'public');
-                $mascotaData['foto'] = $rutaFoto;
-            }
+        $mascota->save();
 
-            $mascota = Mascota::create($mascotaData);
-
-            return redirect()->route('admin.mascotas.show', $mascota)
-                ->with('mensaje', '¡La mascota ha sido registrada exitosamente!')
-                ->with('icono', 'success');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('mensaje', 'Ocurrió un error al registrar la mascota. Por favor, inténtalo de nuevo.')
-                ->with('icono', 'error');
-        }
+        return redirect()->route('admin.mascotas.index') // Cambia por la ruta correspondiente
+        ->with('mensaje', 'Se registró la mascota exitosamente.')
+            ->with('icono', 'success');
     }
+
 
     public function show(Mascota $mascota)
     {
@@ -125,7 +124,7 @@ class MascotaController extends Controller
 
     public function update(Request $request, Mascota $mascota)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'paciente_id' => 'required|exists:pacientes,id',
             'nombre' => 'required|string|max:255',
             'especie' => 'required|string|max:255',
@@ -143,40 +142,38 @@ class MascotaController extends Controller
             'estado' => 'required|in:Activo,Inactivo,Fallecido',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('mensaje', 'Por favor, corrija los errores en el formulario.')
-                ->with('icono', 'error');
-        }
+        // Actualizar los atributos de la mascota
+        $mascota->paciente_id = $request->paciente_id;
+        $mascota->nombre = $request->nombre;
+        $mascota->especie = $request->especie;
+        $mascota->raza = $request->raza;
+        $mascota->color = $request->color;
+        $mascota->sexo = $request->sexo;
+        $mascota->fecha_nacimiento = $request->fecha_nacimiento;
+        $mascota->peso = $request->peso;
+        $mascota->caracteristicas_especiales = $request->caracteristicas_especiales;
+        $mascota->esterilizado = $request->boolean('esterilizado');
+        $mascota->alergias = $request->alergias;
+        $mascota->condiciones_medicas = $request->condiciones_medicas;
+        $mascota->medicacion_actual = $request->medicacion_actual;
 
-        try {
-            $mascotaData = $request->except('foto');
-
-            if ($request->hasFile('foto')) {
-                if ($mascota->foto) {
-                    Storage::disk('public')->delete($mascota->foto);
-                }
-
-                $foto = $request->file('foto');
-                $nombreFoto = time() . '_' . $foto->getClientOriginalName();
-                $rutaFoto = $foto->storeAs('mascotas', $nombreFoto, 'public');
-                $mascotaData['foto'] = $rutaFoto;
+        // Manejo de la foto: eliminar la anterior y guardar la nueva
+        if ($request->hasFile('foto')) {
+            if ($mascota->foto && Storage::disk('public')->exists($mascota->foto)) {
+                Storage::disk('public')->delete($mascota->foto);
             }
-
-            $mascota->update($mascotaData);
-
-            return redirect()->route('admin.mascotas.show', $mascota)
-                ->with('mensaje', '¡La mascota ha sido actualizada exitosamente!')
-                ->with('icono', 'success');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('mensaje', 'Ocurrió un error al actualizar la mascota. Por favor, inténtalo de nuevo.')
-                ->with('icono', 'error');
+            $mascota->foto = $request->file('foto')->store('mascotas', 'public');
         }
+
+        $mascota->estado = $request->estado;
+
+        $mascota->save();
+
+        return redirect()->route('admin.mascotas.index') // Cambia por la ruta correspondiente
+        ->with('mensaje', 'La mascota ha sido actualizada exitosamente.')
+            ->with('icono', 'success');
     }
+
 
     public function destroy(Mascota $mascota)
     {

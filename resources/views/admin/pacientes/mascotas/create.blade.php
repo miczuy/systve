@@ -1,4 +1,4 @@
-<!-- resources/views/admin/mascotas/create.blade.php -->
+<!-- resources/views/paciente/mascotas/create.blade.php -->
 @extends('layouts.admin')
 
 @section('content')
@@ -14,8 +14,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                         </div>
-                        <h1 class="text-3xl font-bold text-white mb-2">Registrar Nueva Mascota</h1>
-                        <p class="text-white/80 max-w-lg text-center">Complete la información para registrar una nueva mascota en el sistema. Los campos marcados con * son obligatorios.</p>
+                        <h1 class="text-3xl font-bold text-white mb-2">Registrar Mi Mascota</h1>
+                        <p class="text-white/80 max-w-lg text-center">Complete la información para registrar una nueva mascota. Los campos marcados con * son obligatorios.</p>
                     </div>
                 </div>
 
@@ -77,7 +77,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.mascotas.create') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+            <form action="{{ route('paciente.mascotas.create') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
 
                 <!-- Información básica -->
@@ -96,34 +96,6 @@
 
                     <div class="p-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Paciente (dueño) -->
-                            <div class="col-span-1 md:col-span-2">
-                                <label for="paciente_id" class="block text-sm font-medium text-gray-700 mb-2">Dueño de la mascota*</label>
-                                <div class="relative rounded-lg shadow-sm">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                    </div>
-                                    <select name="paciente_id" id="paciente_id" class="block w-full pl-10 pr-10 py-3 border-gray-300 bg-gray-50 focus:ring-teal-500 focus:border-teal-500 rounded-lg shadow-sm @error('paciente_id') border-rose-500 @enderror" required>
-                                        <option value="">Seleccione un propietario</option>
-                                        @foreach($pacientes as $paciente)
-                                            <option value="{{ $paciente->id }}" {{ old('paciente_id') == $paciente->id ? 'selected' : '' }}>
-                                                {{ $paciente->apellidos }}, {{ $paciente->nombres }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                @error('paciente_id')
-                                <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
                             <!-- Nombre -->
                             <div>
                                 <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre de la mascota*</label>
@@ -481,8 +453,6 @@
                             });
                         </script>
 
-
-
                         @error('foto')
                         <div class="mt-4 bg-rose-50 border-l-4 border-rose-500 p-4 rounded-lg">
                             <div class="flex">
@@ -502,7 +472,7 @@
 
                 <!-- Botones de acción -->
                 <div class="flex flex-col sm:flex-row sm:justify-between gap-4">
-                    <a href="{{ route('admin.mascotas.index') }}" class="flex items-center justify-center py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl shadow-sm transition-colors duration-300 order-2 sm:order-1">
+                    <a href="{{ route('paciente.mascotas.index') }}" class="flex items-center justify-center py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl shadow-sm transition-colors duration-300 order-2 sm:order-1">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>

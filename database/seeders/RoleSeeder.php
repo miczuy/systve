@@ -31,7 +31,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.usuarios.show'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.usuarios.edit'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.usuarios.update'])->syncRoles([$admin]);
-        Permission::create(['name' => 'admin.usuarios.confirmDelete'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.usuarios.destroy'])->syncRoles([$admin]);
 
         // rutas para el admin configuraciones.
@@ -41,7 +40,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.configuraciones.show'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.configuraciones.edit'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.configuraciones.update'])->syncRoles([$admin]);
-        Permission::create(['name' => 'admin.configuraciones.confirmDelete'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.configuraciones.destroy'])->syncRoles([$admin]);
 
         //Rutas para las Enfermeras.
@@ -51,7 +49,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.enfermeras.show'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.enfermeras.edit'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.enfermeras.update'])->syncRoles([$admin]);
-        Permission::create(['name' => 'admin.enfermeras.confirmDelete'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.enfermeras.destroy'])->syncRoles([$admin]);
 
         //Rutas para el admin Paciente.
@@ -62,7 +59,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.pacientes.show'])->syncRoles([$admin,$enfermera]);
         Permission::create(['name' => 'admin.pacientes.edit'])->syncRoles([$admin,$enfermera]);
         Permission::create(['name' => 'admin.pacientes.update'])->syncRoles([$admin,$enfermera]);
-        Permission::create(['name' => 'admin.pacientes.confirmDelete'])->syncRoles([$admin,$enfermera]);
         Permission::create(['name' => 'admin.pacientes.destroy'])->syncRoles([$admin,$enfermera]);
 
         //Rutas admin consultorios
@@ -72,7 +68,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.consultorios.show'])->syncRoles([$admin,$enfermera]);
         Permission::create(['name' => 'admin.consultorios.edit'])->syncRoles([$admin,$enfermera]);
         Permission::create(['name' => 'admin.consultorios.update'])->syncRoles([$admin,$enfermera]);
-        Permission::create(['name' => 'admin.consultorios.confirmDelete'])->syncRoles([$admin,$enfermera]);
         Permission::create(['name' => 'admin.consultorios.destroy'])->syncRoles([$admin,$enfermera]);
 
 
@@ -84,7 +79,6 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.doctores.show'])->syncRoles([$admin,$enfermera]);
         Permission::create(['name' => 'admin.doctores.edit'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.doctores.update'])->syncRoles([$admin]);
-        Permission::create(['name' => 'admin.doctores.confirmDelete'])->syncRoles([$admin]);
         Permission::create(['name' => 'admin.doctores.destroy'])->syncRoles([$admin]);
 
         //rutas de Admin Horarios
@@ -107,12 +101,12 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.eventos.destroy'])->syncRoles([$admin,$usuario]);
 
         // Rutas para las reservas
-        Permission::create(['name' => 'admin.reservas.reportes'])->syncRoles([$admin]);
+        Permission::create(['name' => 'admin.reservas.reportes'])->syncRoles([$admin,$enfermera]);
 
         // Nuevas rutas para gestión de eventos
-        Permission::create(['name' => 'admin.eventos.atender'])->syncRoles([$admin]);
-        Permission::create(['name' => 'admin.reservas.pdf'])->syncRoles([$admin]);
-        Permission::create(['name' => 'admin.reservas.pdf_fechas'])->syncRoles([$admin]);
+        Permission::create(['name' => 'admin.eventos.atender'])->syncRoles([$admin,$enfermera]);
+        Permission::create(['name' => 'admin.reservas.pdf'])->syncRoles([$admin,$enfermera]);
+        Permission::create(['name' => 'admin.reservas.pdf_fechas'])->syncRoles([$admin,$enfermera]);
 
         //rutas de Admin Historial clinico
         Permission::create(['name' => 'admin.historial.index'])->syncRoles([$admin,$doctor]);

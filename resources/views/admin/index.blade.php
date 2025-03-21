@@ -12,12 +12,14 @@
             <div class="text-center mb-12">
                 <!-- Título con efecto de gradiente mejorado -->
                 <div class="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 dark:from-blue-300 dark:via-indigo-300 dark:to-purple-300">
-                    Dashboard
+                    Huellitas del Corazon
                 </div>
-                <!-- Descripción del panel con mejor tipografía -->
                 <p class="mt-4 text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                    Bienvenido al panel de administración. Aquí encontrarás estadísticas clave del sistema.
+                    Para desplegar el menú presione el corazón a su izquierda.
+                <hr>
+                    <img src="{{ asset('systve/public/images/corazon.png') }}" alt="Corazón" style="display: inline; height: 3em; vertical-align: middle;">
                 </p>
+
                 <!-- Línea decorativa con animación sutil -->
                 <div class="mt-4 h-1.5 w-32 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 mx-auto rounded-full animate-pulse"></div>
             </div>
@@ -44,7 +46,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Usuarios</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Usuarios</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -84,7 +86,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Enfermeras</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Enfermeras</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -124,7 +126,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Pacientes</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Pacientes</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -164,7 +166,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Consultorios</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Consultorios</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -204,7 +206,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Doctores</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Doctores</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -244,7 +246,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Horarios</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Horarios</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -276,7 +278,7 @@
                         <div class="absolute inset-0 bg-gradient-to-br from-emerald-50/40 to-white dark:from-emerald-900/30 dark:to-gray-800/30"></div>
                         <div class="absolute top-0 right-0 w-32 h-32 -mt-8 -mr-8 bg-emerald-100 dark:bg-emerald-800/30 rounded-full opacity-40"></div>
 
-                        <a href="" class="block p-6 relative z-10">
+                        <a href="{{ url('admin/reservas/reportes') }}" class="block p-6 relative z-10">
                             <div class="flex flex-col items-center">
                                 <!-- Icono original en contenedor mejorado -->
                                 <div class="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 rounded-full flex items-center justify-center shadow-lg mb-5 transform transition-all duration-300 hover:scale-110">
@@ -284,7 +286,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Reservas</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Reservas</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -310,7 +312,7 @@
                 @endcan
 
                 <!-- TARJETA: TOTAL Configuraciones -->
-                @can('admin.horarios.index')
+                @can('admin.configuraciones.index')
                     <div class="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 overflow-hidden">
                         <!-- Fondo decorativo con patrones sutiles -->
                         <div class="absolute inset-0 bg-gradient-to-br from-rose-50/40 to-white dark:from-rose-900/30 dark:to-gray-800/30"></div>
@@ -327,7 +329,7 @@
                                 </div>
 
                                 <!-- Título con tipografía mejorada -->
-                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Total Configuraciones</h2>
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Configuraciones</h2>
 
                                 <!-- Contador con efecto de destaque -->
                                 <div class="relative mt-3 mb-3">
@@ -351,6 +353,47 @@
                         </a>
                     </div>
                 @endcan
+
+                <!-- TARJETA: TOTAL Mascotas -->
+                @can('admin.horarios.index')
+                    <div class="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 overflow-hidden">
+                        <!-- Fondo decorativo con gradientes modernos -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/40 to-white dark:from-indigo-900/30 dark:to-gray-800/30"></div>
+                        <div class="absolute top-0 right-0 w-32 h-32 -mt-8 -mr-8 bg-teal-100 dark:bg-teal-800/30 rounded-full opacity-40"></div>
+
+                        <a href="{{ url('admin/mascotas') }}" class="block p-6 relative z-10">
+                            <div class="flex flex-col items-center">
+                                <!-- Icono con gradiente moderno -->
+                                <div class="w-24 h-24 bg-gradient-to-br from-teal-400 to-indigo-500 dark:from-teal-500 dark:to-indigo-600 rounded-full flex items-center justify-center shadow-lg mb-5 transform transition-all duration-300 hover:scale-110">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/2138/2138440.png" width="80" height="80" title="" alt="Mascotas">
+                                </div>
+
+                                <!-- Título con tipografía mejorada -->
+                                <h2 class="text-2xl font-bold text-gray-800 dark:text-white tracking-wide">Mascotas</h2>
+
+                                <!-- Contador con efecto de destaque -->
+                                <div class="relative mt-3 mb-3">
+                                    <div class="absolute inset-0 bg-indigo-100 dark:bg-indigo-900/50 blur-md rounded-full transform scale-110"></div>
+                                    <p class="relative z-10 text-5xl font-black text-indigo-600 dark:text-indigo-300 counter" data-target="{{ $total_mascotas}}">0</p>
+                                </div>
+
+                                <!-- Línea divisoria decorativa -->
+                                <div class="w-16 h-1 bg-gradient-to-r from-teal-300 to-indigo-400 dark:from-teal-400 dark:to-indigo-500 rounded-full my-3"></div>
+
+                                <!-- Frase inspiradora mejorada -->
+                                <div class="mt-2 text-sm font-medium text-gray-600 dark:text-gray-300 italic">
+                                    "!Una Huella tiene su Historia!"
+                                </div>
+
+                                <!-- Botón sutil para indicar acción -->
+                                <div class="mt-4 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-xs font-medium text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 transition-colors duration-300">
+                                    Ver detalles
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endcan
+
             </div>
 
 
@@ -1202,24 +1245,46 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="mascota_id" class="block text-sm font-medium text-slate-700/90 mb-2 ml-1 flex items-center">
-                                                <svg class="w-5 h-5 mr-2 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4M8 16l-4-4 4-4"/>
-                                                </svg>
-                                                Mascota (opcional)
-                                            </label>
-                                            <select name="mascota_id" id="mascota_id" class="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-blue-400">
-                                                <option value="">Sin mascota / Seleccionar después</option>
-                                                @foreach($mascotas as $mascota)
-                                                    <option value="{{ $mascota->id }}">
-                                                        {{ $mascota->nombre }} - {{ $mascota->especie }} {{ $mascota->raza ? '(' . $mascota->raza . ')' : '' }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <p class="mt-1 text-xs text-gray-500">
-                                                Si no selecciona una mascota, podrá vincularla posteriormente durante la atención.
-                                            </p>
+                                        <!-- Selector de mascotas para formulario de citas -->
+                                        <div class="mb-6">
+                                            <label for="mascota_id" class="block text-sm font-medium text-gray-700 mb-2">Mascota*</label>
+                                            <div class="relative rounded-lg shadow-sm">
+                                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                    </svg>
+                                                </div>
+                                                <select name="mascota_id" id="mascota_id" class="pl-10 pr-10 py-3 block w-full border-gray-300 bg-gray-50 rounded-lg shadow-sm focus:ring-teal-500 focus:border-teal-500 @error('mascota_id') border-rose-500 @enderror" required>
+                                                    <option value="">Seleccione una mascota</option>
+                                                    @foreach($mascotas as $mascota)
+                                                        <option value="{{ $mascota->id }}" {{ old('mascota_id') == $mascota->id ? 'selected' : '' }}>
+                                                            {{ $mascota->nombre }} ({{ $mascota->especie }} - {{ $mascota->raza ?: 'Sin raza' }})
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+
+                                            <!-- Enlace para crear una mascota si no tiene ninguna -->
+                                            @if($mascotas->isEmpty())
+                                                <div class="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                                                    <p class="text-sm text-blue-700 mb-2">No tienes mascotas registradas.</p>
+                                                    <a href="{{ route('paciente.mascotas.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                                        </svg>
+                                                        Registrar una mascota
+                                                    </a>
+                                                </div>
+                                            @endif
+
+                                            @error('mascota_id')
+                                            <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                         <!-- Selector de fecha -->
                                         <div class="form-group">

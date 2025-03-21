@@ -64,7 +64,7 @@ class Event extends Model
     }
     public function mascota()
     {
-        return $this->belongsTo(\App\Models\Mascota::class);
+        return $this->belongsTo(Mascota::class);
     }
 
 
